@@ -1,11 +1,16 @@
 import {BelongsToMany, Column, DataType, Model, Table} from "sequelize-typescript";
 import {Countries} from "../countries/countries.model";
 import {CountriesFilm} from "./film-countries.model";
+import {Actors} from "../actors/actors.model";
+import {ActorsFilm} from "./film-actors.model";
+import {Genres} from "../genre/genre.model";
+import {GenresFilm} from "./film-genres.model";
 
 
 interface FilmCreationAttrs {
     id: number;
     name: string;
+    nameEn: string;
     marksAmount: number;
     rating: number;
     countries: string;
@@ -23,8 +28,11 @@ export class Film extends Model<FilmCreationAttrs> {
         //получим id как число, уникальное автозаполнение 1..2..3
     id: number;
 
-    @Column({type: DataType.STRING, unique: true, allowNull: false})
+    @Column({type: DataType.STRING})
     name: string;
+
+    @Column({type: DataType.STRING})
+    nameEn: string;
 
     @Column({type: DataType.NUMBER})
     marksAmount: number;
@@ -32,15 +40,17 @@ export class Film extends Model<FilmCreationAttrs> {
     @Column({type: DataType.NUMBER})
     rating: number;
 
-
     @BelongsToMany(()=> Countries, ()=> CountriesFilm)
     countries: Countries[];
 
-    // @BelongsToMany(()=> Actors, ()=> ActorsFilm)
-    // actors: Actors[];
+    @BelongsToMany(()=> Actors, ()=> ActorsFilm)
+    actors: Actors[];
+
+    @BelongsToMany(()=> Genres, ()=> GenresFilm)
+    genre: Genres[];
 
     @Column({type: DataType.NUMBER})
-    worldPremiere: number;
+    year: number;
 
     @Column({type: DataType.STRING})
     filmDescription: string;

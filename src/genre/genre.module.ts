@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
 import {SequelizeModule} from "@nestjs/sequelize";
-import {Countries} from "./countries.model";
+import { Genres} from "./genre.model";
 
 
 
 @Module({
   providers: [],
   controllers: [],
-  imports: [SequelizeModule.forFeature([Countries]),
+  imports: [SequelizeModule.forFeature([Genres]),
   ],
 
 })
-export class CountriesModule {}
+export class GenreModule {}

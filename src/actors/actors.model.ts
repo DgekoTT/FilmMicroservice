@@ -1,25 +1,30 @@
 import {BelongsToMany, Column, DataType, Model, Table} from "sequelize-typescript";
 import {Film} from "../film/film.model";
-import {CountriesFilm} from "../film/film-countries.model";
+import {ActorsFilm} from "../film/film-actors.model";
 
 
-interface CountriesCreationAttrs {
+
+interface ActorsCreationAttrs {
     id: number;
     name: string;
+    nameEnglish: string;
 }
 
-@Table({tableName: 'countries'})//появится таблица с именем countries
-export class Countries extends Model<CountriesCreationAttrs> {
+@Table({tableName: 'actors'})//появится таблица с именем countries
+export class Actors extends Model<ActorsCreationAttrs> {
 
     // появятся указанные колонки
     @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})
         //получим id как число, уникальное автозаполнение 1..2..3
     id: number;
 
-    @Column({type: DataType.STRING, unique: true, allowNull: false})
+    @Column({type: DataType.STRING})
     name: string;
 
-    @BelongsToMany(()=> Film, ()=> CountriesFilm)
+    @Column({type: DataType.STRING})
+    nameEnglish: string;
+
+    @BelongsToMany(()=> Film, ()=> ActorsFilm)
     films: Film[];
 
 

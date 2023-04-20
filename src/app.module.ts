@@ -3,6 +3,9 @@ import path from "path";
 import {SequelizeModule} from "@nestjs/sequelize";
 import {ConfigModule} from "@nestjs/config";
 import {FilmModule} from "./film/film.module";
+import {ActorsModule} from "./actors/actors.module";
+import {CountriesModule} from "./countries/countries.module";
+import {GenreModule} from "./genre/genre.module";
 
 @Module({
   imports: [      // что бы нест всю конфигурацию считывал
@@ -20,7 +23,10 @@ import {FilmModule} from "./film/film.module";
       models: [],
       autoLoadModels: true
     }),
-    FilmModule
+    FilmModule,
+    ActorsModule,
+    CountriesModule,
+    GenreModule
   ],
   controllers: [],
   providers: [],

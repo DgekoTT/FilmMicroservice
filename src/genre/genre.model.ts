@@ -1,15 +1,16 @@
 import {BelongsToMany, Column, DataType, Model, Table} from "sequelize-typescript";
 import {Film} from "../film/film.model";
-import {CountriesFilm} from "../film/film-countries.model";
+import {GenresFilm} from "../film/film-genres.model";
 
 
-interface CountriesCreationAttrs {
+
+interface GenresCreationAttrs {
     id: number;
     name: string;
 }
 
-@Table({tableName: 'countries'})//появится таблица с именем countries
-export class Countries extends Model<CountriesCreationAttrs> {
+@Table({tableName: 'genres'})//появится таблица с именем countries
+export class Genres extends Model<GenresCreationAttrs> {
 
     // появятся указанные колонки
     @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})
@@ -19,8 +20,7 @@ export class Countries extends Model<CountriesCreationAttrs> {
     @Column({type: DataType.STRING, unique: true, allowNull: false})
     name: string;
 
-    @BelongsToMany(()=> Film, ()=> CountriesFilm)
+    @BelongsToMany(()=> Film, ()=> GenresFilm)
     films: Film[];
-
 
 }
