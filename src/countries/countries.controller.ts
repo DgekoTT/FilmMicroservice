@@ -13,7 +13,7 @@
 // } from '@nestjs/common';
 // import {CountriesService} from "./countries.service";
 // import {FileInterceptor} from "@nestjs/platform-express";
-// import {CreateBlocksDto} from "./dto/create-blocks.dto";
+// import {CreateFilmDto} from "./dto/create-blocks.dto";
 // import {UpdateBlocksDto} from "./dto/update-blocks.dto";
 // import {Roles} from "../auth/roles-auth.decorator";
 // import {RolesGuard} from "../auth/role.guard";
@@ -29,7 +29,7 @@
 //     @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
 //     @Post()
 //     @UseInterceptors(FileInterceptor('image'))//для работы с файлами
-//     createBlock(@Body() dto: CreateBlocksDto,
+//     createBlock(@Body() dto: CreateFilmDto,
 //                //получить файл
 //                @UploadedFile() image){
 //         return this.blockService.createBlocks(dto, image)

@@ -29,12 +29,19 @@ export class GenreService {
     async updateGenre(dto: UpdateGenreDto) {
         let genre = await this.genreRepository.findOne({where: {id: dto.id}});
         this.checkerGenre(genre);
+        let success = await this.genreRepository.update({...dto}, {
+            where: {
+                id: dto.id
+            }
+        });
+        if (success) return `Жанр успешно обновлен`;
+        throw new HttpException('Ошибка обновления жанра', HttpStatus.BAD_REQUEST);
     }
 
 
     checkerGenre(genre:any) {
         if (!genre) {
-            throw new HttpException('Профиль с данным id не найден', HttpStatus.NOT_FOUND)
+            throw new HttpException('Жанр с данным id не найден', HttpStatus.NOT_FOUND);
         }
     }
 }

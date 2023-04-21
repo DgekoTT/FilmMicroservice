@@ -13,51 +13,45 @@ import {
 } from '@nestjs/common';
 import {FilmService} from "./film.service";
 import {FileInterceptor} from "@nestjs/platform-express";
-import {CreateBlocksDto} from "./dto/create-blocks.dto";
-import {UpdateBlocksDto} from "./dto/update-blocks.dto";
-import {Roles} from "../auth/roles-auth.decorator";
-import {RolesGuard} from "../auth/role.guard";
+import {CreateFilmDto} from "./dto/create-film.dto";
+
+
 
 @Controller('blocks')
 export class FilmController {
 
 
-    constructor(private blockService: FilmService) {
+    constructor(private filmService: FilmService) {
     }
 
-    @Roles("admin")
-    @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
+    // @Roles("admin")
+    // @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
     @Post()
-    @UseInterceptors(FileInterceptor('image'))//для работы с файлами
-    createBlock(@Body() dto: CreateBlocksDto,
-               //получить файл
-               @UploadedFile() image){
-        return this.blockService.createBlocks(dto, image)
+    createFilm(@Body() dto: CreateFilmDto){
+        return this.filmService.createFilm(dto)
     }
 
-    @Roles("admin")
-    @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
-    @Put('/update')
-    @UseInterceptors(FileInterceptor('image'))//для работы с файлами
-    updateBlock(@Body() dto: UpdateBlocksDto,
-                @UploadedFile() image) {
-        return this.blockService.updateBlock(dto, image);
-    }
-S
-    @Roles("admin")
-    @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
-    @Delete("/:id")
-    deleteBlock(@Param("id") id: number) {
-        return this.blockService.deleteBlock(id);
-    }
-
-    @Get()
-    getAllBlocks() {
-        return this.blockService.getAllBlock();
-    }
-
-    @Get("/:group")
-    getBlocksByGroup(@Param("group") group: string) {
-        return this.blockService. getBlockByGroup(group);
-    }
+    // @Roles("admin")
+    // @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
+//     @Put('/update')
+//     updateBlock(@Body() dto: UpdateBlocksDto,) {
+//         return this.filmService.updateBlock(dto);
+//     }
+// S
+//     @Roles("admin")
+//     @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
+//     @Delete("/:id")
+//     deleteBlock(@Param("id") id: number) {
+//         return this.filmService.deleteBlock(id);
+//     }
+//
+//     @Get()
+//     getAllBlocks() {
+//         return this.filmService.getAllBlock();
+//     }
+//
+//     @Get("/:group")
+//     getBlocksByGroup(@Param("group") group: string) {
+//         return this.filmService. getBlockByGroup(group);
+//     }
 }

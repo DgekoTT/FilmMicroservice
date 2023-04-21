@@ -11,13 +11,15 @@ interface FilmCreationAttrs {
     id: number;
     name: string;
     nameEn: string;
-    marksAmount: number;
+    type: string;// фильм, сериал или мультфильм
+    image: string;// ссылка с кинопоиска на постер фильма
+    ratingVoteCount: number;
     rating: number;
-    countries: string;
-    actors: string;
-    worldPremiere: number;
+    countries: string;// русский строка через ','
+    actors: [string];// [0] русский строка через ',' [1] english строка через ','
+    filmLength: string;// продолжительность
+    year: number;
     filmDescription: string;
-    comments: number;
 }
 
 @Table({tableName: 'films'})//появится таблица с именем films
@@ -34,8 +36,14 @@ export class Film extends Model<FilmCreationAttrs> {
     @Column({type: DataType.STRING})
     nameEn: string;
 
+    @Column({type: DataType.STRING})
+    type: string;// фильм, сериал или мультфильм
+
+    @Column({type: DataType.STRING})
+    image: string;
+
     @Column({type: DataType.NUMBER})
-    marksAmount: number;
+    ratingVoteCount: number;
 
     @Column({type: DataType.NUMBER})
     rating: number;
@@ -51,6 +59,9 @@ export class Film extends Model<FilmCreationAttrs> {
 
     @Column({type: DataType.NUMBER})
     year: number;
+
+    @Column({type: DataType.STRING})
+    filmLength: string;
 
     @Column({type: DataType.STRING})
     filmDescription: string;
