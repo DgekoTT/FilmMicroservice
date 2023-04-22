@@ -1,30 +1,21 @@
-//
-// import {
-//     Body,
-//     Controller,
-//     Delete,
-//     Get,
-//     Param,
-//     Post,
-//     Put,
-//     UploadedFile,
-//     UseGuards,
-//     UseInterceptors
-// } from '@nestjs/common';
-// import {CountriesService} from "./countries.service";
-// import {FileInterceptor} from "@nestjs/platform-express";
-// import {CreateFilmDto} from "./dto/create-blocks.dto";
-// import {UpdateFilmDto} from "./dto/update-blocks.dto";
-// import {Roles} from "../auth/roles-auth.decorator";
-// import {RolesGuard} from "../auth/role.guard";
-//
-// @Controller('blocks')
-// export class CountriesController {
-//
-//
-//     constructor(private blockService: CountriesService) {
-//     }
-//
+
+import {
+
+    Controller, Post,
+
+} from '@nestjs/common';
+import {CountriesService} from "./countries.service";
+
+@Controller('blocks')
+export class CountriesController {
+
+
+    constructor(private countriesService: CountriesService) {}
+
+    @Post('c')
+    loadCountries(): Promise<string> {
+        return this.countriesService.loadCountries();
+    }
 //     @Roles("admin")
 //     @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
 //     @Post()
@@ -60,4 +51,4 @@
 //     getBlocksByGroup(@Param("group") group: string) {
 //         return this.blockService. getBlockByGroup(group);
 //     }
-// }
+}

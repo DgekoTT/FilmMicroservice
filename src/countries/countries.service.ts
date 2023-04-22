@@ -4,6 +4,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {Op} from "sequelize";
 import {Countries} from "./countries.model";
+import fs from "fs";
 
 
 
@@ -27,6 +28,17 @@ export class CountriesService {
             }
         })
         return countriesInDb;
+    }
+
+    //загружаем страны из файла в базу
+    async loadCountries(): Promise<string> {
+        let countries = [];
+        fs.readFile('countries.txt', 'utf8', (err, data) =>{
+            if (err) throw err;
+            countries = data.split('/n')
+        })
+        await this.countriesRepository.bulkCreate(countries);
+        return `Страны загружены в базу данных`
     }
 
 

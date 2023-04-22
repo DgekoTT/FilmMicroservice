@@ -5,6 +5,7 @@ import {Genres} from "./genre.model";
 import {CreateGenreDto} from "./dto/create.genre.dto";
 import {UpdateGenreDto} from "./dto/update.genre.dto";
 import {Op} from "sequelize";
+import * as fs from "fs";
 
 
 @Injectable()
@@ -63,4 +64,15 @@ export class GenreService {
         })
         return genreObj;
     }
+    //загружаем жанры из файла в базу
+   async loadGenres(): Promise<string> {
+        let genres = [];
+        fs.readFile('genre.txt', 'utf8', (err, data) =>{
+            if (err) throw err;
+            genres = data.split('/n')
+        })
+        await this.genreRepository.bulkCreate(genres);
+        return `Жанры загружены в базу данных`
+    }
+
 }
