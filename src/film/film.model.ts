@@ -8,15 +8,16 @@ import {GenresFilm} from "./film-genres.model";
 
 
 interface FilmCreationAttrs {
-    id: number;
+    id?: number;
     name: string;
     nameEn: string;
     type: string;// фильм, сериал или мультфильм
     image: string;// ссылка с кинопоиска на постер фильма
+    genre: string;// русский строка через ','
     ratingVoteCount: number;
     rating: number;
     countries: string;// русский строка через ','
-    actors: [string];// [0] русский строка через ',' [1] english строка через ','
+    actors: string[];// [0] русский строка через ',' [1] english строка через ','
     filmLength: string;// продолжительность
     year: number;
     filmDescription: string;

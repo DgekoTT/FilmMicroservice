@@ -14,7 +14,7 @@
 // import {CountriesService} from "./countries.service";
 // import {FileInterceptor} from "@nestjs/platform-express";
 // import {CreateFilmDto} from "./dto/create-blocks.dto";
-// import {UpdateBlocksDto} from "./dto/update-blocks.dto";
+// import {UpdateFilmDto} from "./dto/update-blocks.dto";
 // import {Roles} from "../auth/roles-auth.decorator";
 // import {RolesGuard} from "../auth/role.guard";
 //
@@ -39,7 +39,7 @@
 //     @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
 //     @Put('/update')
 //     @UseInterceptors(FileInterceptor('image'))//для работы с файлами
-//     updateBlock(@Body() dto: UpdateBlocksDto,
+//     updateBlock(@Body() dto: UpdateFilmDto,
 //                 @UploadedFile() image) {
 //         return this.blockService.updateBlock(dto, image);
 //     }

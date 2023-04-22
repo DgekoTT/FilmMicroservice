@@ -19,12 +19,13 @@ export class ActorsServiceService {
         return actor;
     }
 
-    async getActorsId(actors: string[]){
-        await this.actorsRepository.findAll({
+    async getActors(actors: string[]){
+        let actorsInDb = await this.actorsRepository.findAll({
             where: {
                 name: { [Op.in]: actors[0].split(',') }
             }
         })
+        return actorsInDb;
     }
 
     async getActorByValue(value: string) {
@@ -35,9 +36,11 @@ export class ActorsServiceService {
     async checkActors(actors: string[]) {
         const newActors = actors[0].split(',');
         const newActorsEn = actors[1].split(',');
+        let lastActors = await this.getActors(newActors);
         let actorsForCreation = await this.findMissingActors(newActors);
-        let createdActors = this.createNewActors(actorsForCreation, newActors, newActorsEn);
-        return createdActors;
+        let createdActors = await this.createNewActors(actorsForCreation, newActors, newActorsEn);
+        let allActors = lastActors.concat(createdActors)
+        return allActors;
     }
 
     async createNewActors(actorsForCreation: string[],newActors: string[], newActorsEn: string[]) {

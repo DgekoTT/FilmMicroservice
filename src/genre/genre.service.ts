@@ -4,6 +4,7 @@ import {InjectModel} from "@nestjs/sequelize";
 import {Genres} from "./genre.model";
 import {CreateGenreDto} from "./dto/create.genre.dto";
 import {UpdateGenreDto} from "./dto/update.genre.dto";
+import {Op} from "sequelize";
 
 
 @Injectable()
@@ -43,5 +44,23 @@ export class GenreService {
         if (!genre) {
             throw new HttpException('Жанр с данным id не найден', HttpStatus.NOT_FOUND);
         }
+    }
+
+    async getGenre(genre: string[]): Promise<Genres[]> {
+        let genresInDb = await this.genreRepository.findAll({
+            where: {
+                name: { [Op.in]: genre }
+            }
+        })
+        return genresInDb;
+    }
+
+    async getGenreId(genre: string): Promise<Genres> {
+        let genreObj = await this.genreRepository.findOne({
+            where: {
+                name: {genre}
+            }
+        })
+        return genreObj;
     }
 }
