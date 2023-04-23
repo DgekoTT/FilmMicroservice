@@ -10,7 +10,7 @@ interface ActorsCreationAttrs {
     nameEnglish: string;
 }
 
-@Table({tableName: 'actors'})//появится таблица с именем countries
+@Table({tableName: 'actors'})//появится таблица с именем actors
 export class Actors extends Model<ActorsCreationAttrs> {
 
     // появятся указанные колонки

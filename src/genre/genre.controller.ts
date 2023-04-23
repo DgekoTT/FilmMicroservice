@@ -7,7 +7,7 @@ import {Genres} from "./genre.model";
 
 
 @Controller('genres')
-export class CountriesController {
+export class GenreController {
 
 
     constructor(private genreService: GenreService) {

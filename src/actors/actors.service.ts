@@ -9,7 +9,7 @@ import {Op} from "sequelize";
 
 
 @Injectable()
-export class ActorsServiceService {
+export class ActorsService{
 
     constructor(@InjectModel(Actors) private actorsRepository: typeof Actors) {}
 

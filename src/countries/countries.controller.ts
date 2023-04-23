@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import {CountriesService} from "./countries.service";
 
-@Controller('blocks')
+@Controller('countries')
 export class CountriesController {
 
 

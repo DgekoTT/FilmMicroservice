@@ -9,7 +9,7 @@ interface GenresCreationAttrs {
     name: string;
 }
 
-@Table({tableName: 'genres'})//появится таблица с именем countries
+@Table({tableName: 'genres'})//появится таблица с именем genres
 export class Genres extends Model<GenresCreationAttrs> {
 
     // появятся указанные колонки
@@ -17,7 +17,7 @@ export class Genres extends Model<GenresCreationAttrs> {
         //получим id как число, уникальное автозаполнение 1..2..3
     id: number;
 
-    @Column({type: DataType.STRING, unique: true, allowNull: false})
+    @Column({type: DataType.STRING})
     name: string;
 
     @BelongsToMany(()=> Film, ()=> GenresFilm)

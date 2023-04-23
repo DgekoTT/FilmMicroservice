@@ -4,7 +4,7 @@ import {Countries} from "../countries/countries.model";
 
 
 
-@Table({tableName: 'CountriesFilm', createdAt: false, updatedAt: false})//появится таблица с именем UserRoles
+@Table({tableName: 'CountriesFilm', createdAt: false, updatedAt: false})//появится таблица с именем CountriesFilm
 export class CountriesFilm extends Model<CountriesFilm> {
 
 

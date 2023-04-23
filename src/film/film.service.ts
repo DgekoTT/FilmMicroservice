@@ -1,22 +1,22 @@
-//nest generate service posts
 
 
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {CreateFilmDto} from "./dto/create-film.dto";
-
 import {Film} from "./film.model";
-import {ActorsServiceService} from "../actors/actors.service";
 import {GenreService} from "../genre/genre.service";
 import {CountriesService} from "../countries/countries.service";
 import {UpdateFilmDto} from "./dto/update-film.dto";
 import {Model} from "sequelize-typescript";
+import {ActorsService} from "../actors/actors.service";
+
+
 
 @Injectable()
 export class FilmService {
     //что бы иметь доступ к базе, инжектим модель бд
     constructor(@InjectModel(Film) private filmRepository: typeof Film,
-                private actorService: ActorsServiceService,
+                private actorService: ActorsService,
                 private genreService: GenreService,
                 private countriesService: CountriesService) {
     }
@@ -64,6 +64,7 @@ export class FilmService {
         const genreObj = await this.genreService.getGenreId(genre);
         const filmByGenre = await this.filmRepository.findAll({
             where: {
+                // @ts-ignore
                 genre: `${genreObj.id}`
             }
         });

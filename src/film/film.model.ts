@@ -13,17 +13,14 @@ interface FilmCreationAttrs {
     nameEn: string;
     type: string;// фильм, сериал или мультфильм
     image: string;// ссылка с кинопоиска на постер фильма
-    genre: string;// русский строка через ','
     ratingVoteCount: number;
     rating: number;
-    countries: string;// русский строка через ','
-    actors: string[];// [0] русский строка через ',' [1] english строка через ','
     filmLength: string;// продолжительность
     year: number;
     filmDescription: string;
 }
 
-@Table({tableName: 'films'})//появится таблица с именем films
+@Table({tableName: 'Kino'})//появится таблица с именем films
 export class Film extends Model<FilmCreationAttrs> {
 
     // появятся указанные колонки
@@ -43,10 +40,10 @@ export class Film extends Model<FilmCreationAttrs> {
     @Column({type: DataType.STRING})
     image: string;
 
-    @Column({type: DataType.NUMBER})
+    @Column({type: DataType.INTEGER})
     ratingVoteCount: number;
 
-    @Column({type: DataType.NUMBER})
+    @Column({type: DataType.INTEGER})
     rating: number;
 
     @BelongsToMany(()=> Countries, ()=> CountriesFilm)
@@ -58,7 +55,7 @@ export class Film extends Model<FilmCreationAttrs> {
     @BelongsToMany(()=> Genres, ()=> GenresFilm)
     genre: Genres[];
 
-    @Column({type: DataType.NUMBER})
+    @Column({type: DataType.INTEGER})
     year: number;
 
     @Column({type: DataType.STRING})
