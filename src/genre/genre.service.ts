@@ -14,13 +14,13 @@ export class GenreService {
     constructor(@InjectModel(Genres) private genreRepository: typeof Genres) {
     }
     async createGenre(dto: CreateGenreDto) {
-        const role = await this.genreRepository.create(dto);
-        return role;
+        const genre = await this.genreRepository.create(dto);
+        return genre;
     }
 
     async getGenreById(id: number) {
-        const role = await this.genreRepository.findOne({where: {id}});
-        return role;
+        const genre = await this.genreRepository.findOne({where: {id : id}});
+        return genre;
     }
 
     async getAllGenres() {
@@ -66,13 +66,15 @@ export class GenreService {
     }
     //загружаем жанры из файла в базу
    async loadGenres(): Promise<string> {
-        let genres = [];
-        fs.readFile('genre.txt', 'utf8', (err, data) =>{
-            if (err) throw err;
-            genres = data.split('/n')
-        })
-        await this.genreRepository.bulkCreate(genres);
-        return `Жанры загружены в базу данных`
+        let data = fs.readFileSync('G:/AA/FilmMicroservice1/src/genre/genre.txt', 'utf8').split('\n');
+        let genres = data.map(el =>{ return {name: `${el.trim()}`}});
+       try {
+           let res = await this.genreRepository.bulkCreate(genres);
+           console.log(res);
+       } catch (err) {
+           console.error(err);
+       }
+       return `Жанры загружены в базу данных `
     }
 
 }

@@ -1,8 +1,6 @@
 import {BelongsToMany, Column, DataType, Model, Table} from "sequelize-typescript";
 import {Countries} from "../countries/countries.model";
 import {CountriesFilm} from "./film-countries.model";
-import {Actors} from "../actors/actors.model";
-import {ActorsFilm} from "./film-actors.model";
 import {Genres} from "../genre/genre.model";
 import {GenresFilm} from "./film-genres.model";
 
@@ -20,7 +18,7 @@ interface FilmCreationAttrs {
     filmDescription: string;
 }
 
-@Table({tableName: 'Kino'})//появится таблица с именем films
+@Table({tableName: 'Films'})//появится таблица с именем films
 export class Film extends Model<FilmCreationAttrs> {
 
     // появятся указанные колонки
@@ -49,8 +47,6 @@ export class Film extends Model<FilmCreationAttrs> {
     @BelongsToMany(()=> Countries, ()=> CountriesFilm)
     countries: Countries[];
 
-    @BelongsToMany(()=> Actors, ()=> ActorsFilm)
-    actors: Actors[];
 
     @BelongsToMany(()=> Genres, ()=> GenresFilm)
     genre: Genres[];

@@ -24,10 +24,10 @@ export class FilmController {
 
     // @Roles("admin")
     // @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
-    @Post()
-    createFilm(@Body() dto: CreateFilmDto): Promise<Film> {
-        return this.filmService.createFilm(dto);
-    }
+    // @Post()
+    // createFilm(@Body() dto: CreateFilmDto): Promise<Film> {
+    //     return this.filmService.createFilm(dto);
+    // }
 
     // @Roles("admin")
     // @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ

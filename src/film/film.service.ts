@@ -1,5 +1,4 @@
 
-
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {CreateFilmDto} from "./dto/create-film.dto";
@@ -8,7 +7,7 @@ import {GenreService} from "../genre/genre.service";
 import {CountriesService} from "../countries/countries.service";
 import {UpdateFilmDto} from "./dto/update-film.dto";
 import {Model} from "sequelize-typescript";
-import {ActorsService} from "../actors/actors.service";
+
 
 
 
@@ -16,22 +15,21 @@ import {ActorsService} from "../actors/actors.service";
 export class FilmService {
     //что бы иметь доступ к базе, инжектим модель бд
     constructor(@InjectModel(Film) private filmRepository: typeof Film,
-                private actorService: ActorsService,
                 private genreService: GenreService,
                 private countriesService: CountriesService) {
     }
 
     async createFilm(dto: CreateFilmDto) {
         // если актера нет, то он будет создан в бд актеров
-        let createdActors = await this.actorService.checkActors(dto.actors);
-        const actorsId = createdActors.map((actor) => actor.id);
-        const newFilm = await this.filmRepository.create(dto);
-        await newFilm.$set('actors', actorsId);
-        const countriesId = await this.countriesService.getCountries(dto.countries.split(','))
-        await newFilm.$set('countries', countriesId);
-        const genreId = await  this.genreService.getGenre(dto.genre.split(','));
-        await newFilm.$set('genre', genreId);
-        return newFilm;
+        // let createdActors = await this.actorService.checkActors(dto.actors);
+        // const actorsId = createdActors.map((actor) => actor.id);
+        // const newFilm = await this.filmRepository.create(dto);
+        // await newFilm.$set('actors', actorsId);
+        // const countriesId = await this.countriesService.getCountries(dto.countries.split(','))
+        // await newFilm.$set('countries', countriesId);
+        // const genreId = await  this.genreService.getGenre(dto.genre.split(','));
+        // await newFilm.$set('genre', genreId);
+        // return newFilm;
     }
 
     async updateFilm(dto: UpdateFilmDto): Promise<string> {
