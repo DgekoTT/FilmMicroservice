@@ -48,6 +48,7 @@ export class GenreService {
     }
 
     async getGenre(genre: string[]): Promise<Genres[]> {
+        genre = genre.map(el => el.trim());
         let genresInDb = await this.genreRepository.findAll({
             where: {
                 name: { [Op.in]: genre }

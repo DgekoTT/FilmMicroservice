@@ -19,16 +19,14 @@ export class FilmService {
                 private countriesService: CountriesService) {}
 
     async createFilm(dto: CreateFilmDto) {
-        // если актера нет, то он будет создан в бд актеров
-        // let createdActors = await this.actorService.checkActors(dto.actors);
-        // const actorsId = createdActors.map((actor) => actor.id);
-        // const newFilm = await this.filmRepository.create(dto);
-        // await newFilm.$set('actors', actorsId);
-        // const countriesId = await this.countriesService.getCountries(dto.countries.split(','))
-        // await newFilm.$set('countries', countriesId);
-        // const genreId = await  this.genreService.getGenre(dto.genre.split(','));
-        // await newFilm.$set('genre', genreId);
-        // return newFilm;
+        const newFilm = await this.filmRepository.create(dto);
+        const countriesObj = await this.countriesService.getCountries(dto.countries.split(','))
+        const countriesId = countriesObj.map(el => el.id);
+        await newFilm.$set('countries', countriesId);
+        const genreObj = await  this.genreService.getGenre(dto.genre.split(', '));
+        const genresId = genreObj.map(el=> el.id);
+        await newFilm.$set('genre', genresId);
+        return newFilm;
     }
 
     async updateFilm(dto: UpdateFilmDto): Promise<string> {
@@ -42,7 +40,7 @@ export class FilmService {
     }
 
     async getFilmById(id: number): Promise<Film> {
-        const film = await this.filmRepository.findOne({where: {id}})as Film & Model<Film>;
+        const film = await this.filmRepository.findOne({where: {id}, include: {all: true}});
         return film;
 
     }

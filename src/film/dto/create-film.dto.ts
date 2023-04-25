@@ -18,7 +18,6 @@ export class CreateFilmDto {
     countries: string;
     @IsString({message: " Должно быть строкой"})
     genre: string;
-    actors: string[];
     @IsString({message: " Должно быть строкой"})
     filmLength: string;
     @IsNumber({}, {message: " Должно быть числом"})
