@@ -1,10 +1,10 @@
 
-
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {Op} from "sequelize";
 import {Countries} from "./countries.model";
-import fs from "fs";
+import * as fs from "fs";
+import {Genres} from "../genre/genre.model";
 
 
 
@@ -13,31 +13,26 @@ export class CountriesService {
 
     constructor(@InjectModel(Countries) private countriesRepository: typeof Countries) {}
 
-    async createCountries() {
-        /*bulkCreate() нужно передать массив с объектами и за 1
-        раз создаст всу объекты в бд
-         */
-        // const actor = await this.countriesRepository.bulkCreate();
-        // return actor;
-    }
 
-    async getCountries(countries: string[]): Promise<Countries[]>{
-        let countriesInDb = await this.countriesRepository.findAll({
+    async getCountryId(country: string): Promise<Countries> {
+        let countryObj = await this.countriesRepository.findOne({
             where: {
-                name: { [Op.in]: countries }
+                name: {country}
             }
         })
-        return countriesInDb;
+        return countryObj;
     }
 
     //загружаем страны из файла в базу
     async loadCountries(): Promise<string> {
-        let countries = [];
-        fs.readFile('countries.txt', 'utf8', (err, data) =>{
-            if (err) throw err;
-            countries = data.split('/n')
-        })
-        await this.countriesRepository.bulkCreate(countries);
+        try {
+            let data = fs.readFileSync('G:/AA/FilmMicroservice1/src/countries/countries.txt', 'utf8').split('\n');
+            let countries = data.map(el =>{ return {name: `${el.trim()}`}});
+            let res = await this.countriesRepository.bulkCreate(countries);
+            console.log(res);
+        } catch (err) {
+            console.error(err);
+        }
         return `Страны загружены в базу данных`
     }
 

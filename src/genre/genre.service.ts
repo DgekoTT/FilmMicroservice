@@ -66,9 +66,9 @@ export class GenreService {
     }
     //загружаем жанры из файла в базу
    async loadGenres(): Promise<string> {
-        let data = fs.readFileSync('G:/AA/FilmMicroservice1/src/genre/genre.txt', 'utf8').split('\n');
-        let genres = data.map(el =>{ return {name: `${el.trim()}`}});
        try {
+           let data = fs.readFileSync('G:/AA/FilmMicroservice1/src/genre/genre.txt', 'utf8').split('\n');
+           let genres = data.map(el =>{ return {name: `${el.trim()}`}});
            let res = await this.genreRepository.bulkCreate(genres);
            console.log(res);
        } catch (err) {

@@ -12,6 +12,7 @@ import {CreateFilmDto} from "./dto/create-film.dto";
 import {UpdateFilmDto} from "./dto/update-film.dto";
 import {Film} from "./film.model";
 import {GenreFilmDto} from "./dto/genre-film.dto";
+import {CountryFilmDto} from "./dto/get.country-film.dto";
 
 
 
@@ -39,6 +40,11 @@ export class FilmController {
     @Get('genre')
     getFilmByGenre(@Body() dto: GenreFilmDto,): Promise<Film[]> {
         return this.filmService.getFilmByGenre(dto.name);
+    }
+
+    @Get('country')
+    getFilmCountry(@Body() dto: CountryFilmDto,): Promise<Film[]> {
+        return this.filmService. getFilmCountry(dto.name);
     }
 
 }

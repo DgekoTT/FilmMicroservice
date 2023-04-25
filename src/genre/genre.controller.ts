@@ -37,7 +37,7 @@ export class GenreController {
         return this.genreService.getGenreById(id);
     }
 
-    @Post('g')
+    @Post('load')
     async loadGenres(): Promise<string> {
         return this.genreService.loadGenres();
     }

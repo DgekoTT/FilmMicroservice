@@ -16,7 +16,7 @@ export class Countries extends Model<CountriesCreationAttrs> {
         //получим id как число, уникальное автозаполнение 1..2..3
     id: number;
 
-    @Column({type: DataType.STRING, unique: true, allowNull: false})
+    @Column({type: DataType.STRING})
     name: string;
 
     @BelongsToMany(()=> Film, ()=> CountriesFilm)

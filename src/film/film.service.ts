@@ -16,8 +16,7 @@ export class FilmService {
     //что бы иметь доступ к базе, инжектим модель бд
     constructor(@InjectModel(Film) private filmRepository: typeof Film,
                 private genreService: GenreService,
-                private countriesService: CountriesService) {
-    }
+                private countriesService: CountriesService) {}
 
     async createFilm(dto: CreateFilmDto) {
         // если актера нет, то он будет создан в бд актеров
@@ -57,7 +56,7 @@ export class FilmService {
         return isFilm;
     }
 
-    // в жанрах хранятся id может не работать
+
     async getFilmByGenre(genre: string): Promise<Film[]> {
         const genreObj = await this.genreService.getGenreId(genre);
         const filmByGenre = await this.filmRepository.findAll({
@@ -69,4 +68,14 @@ export class FilmService {
         return filmByGenre;
     }
 
+    async getFilmCountry(country: string): Promise<Film[]>  {
+        const countryObj = await this.countriesService.getCountryId(country);
+        const filmByCountry = await this.filmRepository.findAll({
+            where: {
+                // @ts-ignore
+                countries: `${countryObj.id}`
+            }
+        });
+        return filmByCountry;
+    }
 }
