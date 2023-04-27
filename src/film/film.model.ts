@@ -6,7 +6,7 @@ import {GenresFilm} from "./film-genres.model";
 
 
 interface FilmCreationAttrs {
-    id?: number;
+    id: number;
     name: string;
     nameEn: string;
     type: string;// фильм, сериал или мультфильм

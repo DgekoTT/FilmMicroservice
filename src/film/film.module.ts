@@ -10,13 +10,27 @@ import {GenreModule} from "../genre/genre.module";
 import {CountriesModule} from "../countries/countries.module";
 import {GenresFilm} from "./film-genres.model";
 import {CountriesFilm} from "./film-countries.model";
+import {ClientsModule, Transport} from "@nestjs/microservices";
 
 
 
 @Module({
   providers: [FilmService],
   controllers: [FilmController],
-  imports: [SequelizeModule.forFeature([Film, Countries, Genres, GenresFilm, CountriesFilm]),
+  imports: [ClientsModule.register([
+        {
+          name: 'FILM_SERVICE',
+          transport: Transport.RMQ,
+          options: {
+            urls: ['amqp://localhost:5672'],
+            queue: 'film_queue',
+            queueOptions: {
+              durable: false
+            },
+          },
+        },
+    ]),
+    SequelizeModule.forFeature([Film, Countries, Genres, GenresFilm, CountriesFilm]),
     GenreModule,
     CountriesModule,
   ],

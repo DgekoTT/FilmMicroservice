@@ -1,7 +1,7 @@
 import {IsNumber, IsString} from "class-validator";
 
 export class CreateFilmDto {
-    id?: number;
+    id: number;
     @IsString({message: " Должно быть строкой"})
     name: string;
     @IsString({message: " Должно быть строкой"})
@@ -24,4 +24,19 @@ export class CreateFilmDto {
     year: number;
     @IsString({message: " Должно быть строкой"})
     filmDescription: string;
+    @IsString({message: " Должно быть строкой"})
+    director: string;
+    @IsString({message: " Должно быть строкой"})
+    scenario: string;
+    @IsString({message: " Должно быть строкой"})
+    producer: string;
+    @IsString({message: " Должно быть строкой"})
+    operator: string;
+    @IsString({message: " Должно быть строкой"})
+    composer: string;
+    @IsString({message: " Должно быть строкой"})
+    painter: string;
+    @IsString({message: " Должно быть строкой"})
+    installation: string;
+    actors?: {}
 }

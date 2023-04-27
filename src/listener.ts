@@ -11,7 +11,7 @@ async function microService() {
         transport: Transport.RMQ,
         options: {
             urls: ['amqp://localhost:5672'],
-            queue: 'films_queue',
+            queue: 'persons_queue',
             queueOptions: {
                 durable: false
             },

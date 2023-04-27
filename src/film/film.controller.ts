@@ -2,7 +2,7 @@
 import {
     Body,
     Controller,
-    Get, Param,
+    Get, Inject, Param,
     Post,
     Put,
 } from '@nestjs/common';
@@ -13,6 +13,9 @@ import {UpdateFilmDto} from "./dto/update-film.dto";
 import {Film} from "./film.model";
 import {GenreFilmDto} from "./dto/genre-film.dto";
 import {CountryFilmDto} from "./dto/get.country-film.dto";
+import {ClientProxy} from "@nestjs/microservices";
+import {firstValueFrom} from "rxjs";
+
 
 
 
@@ -20,15 +23,20 @@ import {CountryFilmDto} from "./dto/get.country-film.dto";
 export class FilmController {
 
 
-    constructor(private filmService: FilmService) {
+    constructor(private filmService: FilmService,
+                @Inject("FILM_SERVICE") private readonly client: ClientProxy) {
     }
 
     // @Roles("admin")
     // @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
     @Post()
-    createFilm(@Body() dto: CreateFilmDto): Promise<Film> {
-        return this.filmService.createFilm(dto);
+    async createFilm(@Body() dto: CreateFilmDto): Promise<any> {
+        const film = await this.filmService.createFilm(dto);
+        const personDto = await this.makePersonDto(dto, film.id);
+        const persons = await firstValueFrom(this.client.send({cmd: 'createPersons'}, personDto))
+        return {...film, ...persons};
     }
+
 
     // @Roles("admin")
     // @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
@@ -50,6 +58,21 @@ export class FilmController {
     @Get('country')
     getFilmCountry(@Body() dto: CountryFilmDto,): Promise<Film[]> {
         return this.filmService. getFilmCountry(dto.name);
+    }
+
+    async makePersonDto(dto: CreateFilmDto, id: number): Promise<any> {
+        const persons = {
+            filmId: id,
+            director: dto.director,
+            scenario: dto.scenario,
+            producer: dto.producer,
+            operator: dto.operator,
+            composer: dto.composer,
+            painter: dto.painter,
+            installation: dto.installation,
+            actors: dto.actors
+        }
+        return persons;
     }
 
 }
