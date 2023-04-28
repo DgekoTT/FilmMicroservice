@@ -35,7 +35,7 @@ export class CountriesService {
     //загружаем страны из файла в базу
     async loadCountries(): Promise<string> {
         try {
-            let data = fs.readFileSync('G:/AA/FilmMicroservice1/src/countries/countries.txt', 'utf8').split('\n');
+            let data = fs.readFileSync('./src/countries/countries.txt', 'utf8').split('\n');
             let countries = data.map(el =>{ return {name: `${el.trim()}`}});
             let res = await this.countriesRepository.bulkCreate(countries);
         } catch (err) {
