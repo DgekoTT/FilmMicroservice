@@ -33,7 +33,7 @@ export class FilmController {
     async createFilm(@Body() dto: CreateFilmDto): Promise<any> {
         const film = await this.filmService.createFilm(dto);
         const personDto = await this.makePersonDto(dto, film.id);
-        const persons = await firstValueFrom(this.client.send({cmd: 'createPersons'}, personDto))
+        const persons = await firstValueFrom(this.client.send({cmd: 'createPersons'}, JSON.stringify(personDto)))
         return {...film, ...persons};
     }
 
@@ -46,8 +46,10 @@ export class FilmController {
     }
 
     @Get('/:id')
-    getFilmById(@Param('id') id: number): Promise<Film>{
-        return this.filmService.getFilmById(id);
+    async getFilmById(@Param('id') id: number): Promise<[Film, any]>{
+        const persons = await firstValueFrom(this.client.send({cmd: 'getPersons'}, id))
+        const film =await this.filmService.getFilmById(id);
+        return [film, persons];
     }
 
     @Get('genre')

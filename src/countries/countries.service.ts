@@ -4,7 +4,7 @@ import {InjectModel} from "@nestjs/sequelize";
 import {Op} from "sequelize";
 import {Countries} from "./countries.model";
 import * as fs from "fs";
-import {Genres} from "../genre/genre.model";
+
 
 
 
@@ -38,7 +38,6 @@ export class CountriesService {
             let data = fs.readFileSync('G:/AA/FilmMicroservice1/src/countries/countries.txt', 'utf8').split('\n');
             let countries = data.map(el =>{ return {name: `${el.trim()}`}});
             let res = await this.countriesRepository.bulkCreate(countries);
-            console.log(res);
         } catch (err) {
             console.error(err);
         }
