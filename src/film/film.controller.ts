@@ -32,9 +32,14 @@ export class FilmController {
     @Post()
     async createFilm(@Body() dto: CreateFilmDto): Promise<any> {
         const film = await this.filmService.createFilm(dto);
-        const personDto = await this.makePersonDto(dto, film.id);
+        const personDto = await this.filmService.makePersonDto(dto, film.id);
         const persons = await firstValueFrom(this.client.send({cmd: 'createPersons'}, JSON.stringify(personDto)))
-        return {...film, ...persons};
+        return this.filmService.makeFilmInfo(film, persons);
+    }
+
+    @Post('/load')
+    loadFilms(): Promise<string>{
+        return this.filmService.loadFilms();
     }
 
 
@@ -46,10 +51,10 @@ export class FilmController {
     }
 
     @Get('/:id')
-    async getFilmById(@Param('id') id: number): Promise<[Film, any]>{
+    async getFilmById(@Param('id') id: number): Promise<{}>{
         const persons = await firstValueFrom(this.client.send({cmd: 'getPersons'}, id))
         const film =await this.filmService.getFilmById(id);
-        return [film, persons];
+        return this.filmService.makeFilmInfo(film, persons);
     }
 
     @Get('genre')
@@ -60,21 +65,6 @@ export class FilmController {
     @Get('country')
     getFilmCountry(@Body() dto: CountryFilmDto,): Promise<Film[]> {
         return this.filmService. getFilmCountry(dto.name);
-    }
-
-    async makePersonDto(dto: CreateFilmDto, id: number): Promise<any> {
-        const persons = {
-            filmId: id,
-            director: dto.director,
-            scenario: dto.scenario,
-            producer: dto.producer,
-            operator: dto.operator,
-            composer: dto.composer,
-            painter: dto.painter,
-            installation: dto.installation,
-            actors: dto.actors
-        }
-        return persons;
     }
 
 }

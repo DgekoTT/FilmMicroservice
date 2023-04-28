@@ -16,6 +16,7 @@ interface FilmCreationAttrs {
     filmLength: string;// продолжительность
     year: number;
     filmDescription: string;
+    filmSpId: number;
 }
 
 @Table({tableName: 'Films'})//появится таблица с именем films
@@ -25,7 +26,8 @@ export class Film extends Model<FilmCreationAttrs> {
     @Column({type: DataType.INTEGER, unique: true, autoIncrement: true, primaryKey: true})
         //получим id как число, уникальное автозаполнение 1..2..3
     id: number;
-
+    @Column({type: DataType.INTEGER})
+    filmSpId: number;
     @Column({type: DataType.STRING})
     name: string;
 
@@ -35,13 +37,13 @@ export class Film extends Model<FilmCreationAttrs> {
     @Column({type: DataType.STRING})
     type: string;// фильм, сериал или мультфильм
 
-    @Column({type: DataType.STRING})
+    @Column({type: DataType.TEXT})
     image: string;
 
     @Column({type: DataType.INTEGER})
     ratingVoteCount: number;
 
-    @Column({type: DataType.INTEGER})
+    @Column({type: DataType.DOUBLE})
     rating: number;
 
     @BelongsToMany(()=> Countries, ()=> CountriesFilm)
@@ -57,7 +59,7 @@ export class Film extends Model<FilmCreationAttrs> {
     @Column({type: DataType.STRING})
     filmLength: string;
 
-    @Column({type: DataType.STRING})
+    @Column({type: DataType.TEXT})
     filmDescription: string;
 
 }

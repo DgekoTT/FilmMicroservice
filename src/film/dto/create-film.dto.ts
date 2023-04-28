@@ -1,7 +1,10 @@
 import {IsNumber, IsString} from "class-validator";
 
 export class CreateFilmDto {
+    @IsNumber({}, {message: " Должно быть числом"})
     id: number;
+    @IsNumber({}, {message: " Должно быть числом"})
+    filmSpId: number;
     @IsString({message: " Должно быть строкой"})
     name: string;
     @IsString({message: " Должно быть строкой"})

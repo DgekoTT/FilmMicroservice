@@ -6,7 +6,7 @@ import {Film} from "./film.model";
 import {GenreService} from "../genre/genre.service";
 import {CountriesService} from "../countries/countries.service";
 import {UpdateFilmDto} from "./dto/update-film.dto";
-import {Model} from "sequelize-typescript";
+import * as fs from "fs";
 
 
 
@@ -75,5 +75,94 @@ export class FilmService {
             }
         });
         return filmByCountry;
+    }
+
+    async loadFilms(): Promise<string> {
+        for (let i=0; i < 1; i++) {// Проходим по всем файлам в папке. Пока беру 1
+            try{
+                let data = fs.readFileSync('./src/film/filmData/filmsWithId0.json', 'utf8')
+                let info = JSON.parse(data);
+                await this.loadToBase(info);
+            }catch (e) {
+                console.log(e);
+            }
+        }
+        return `successes`;
+    }
+
+    async loadToBase(info: any) {
+        let filmSpId = [];
+        for (let el of info) {
+            let film = this.makeFilmToLoad(el)
+            if(!filmSpId.includes(film.filmSpId)) {
+                filmSpId.push(film.filmSpId);
+                await this.filmRepository.create(film)
+            }
+        }
+    }
+
+
+    async makePersonDto(dto: CreateFilmDto, id: number): Promise<any> {
+        const persons = {
+            filmId: id,
+            director: dto.director,
+            scenario: dto.scenario,
+            producer: dto.producer,
+            operator: dto.operator,
+            composer: dto.composer,
+            painter: dto.painter,
+            installation: dto.installation,
+            actors: dto.actors
+        }
+        return persons;
+    }
+
+    makeFilmInfo(film: Film, persons: any) {
+        const filmInfo = {
+            id: film.id,
+            name: film.name,
+            nameEn: film.nameEn,
+            type: film.type,
+            image: film.image,
+            ratingVoteCount: film.ratingVoteCount,
+            rating: film.rating,
+            filmLength: film.filmLength,
+            year: film.year,
+            filmDescription: film.filmDescription,
+            filmSpId: film.filmSpId,
+            director: persons.director,
+            scenario: persons.scenario,
+            producer: persons.producer,
+            operator: persons.operator,
+            composer: persons.composer,
+            painter: persons.painter,
+            installation: persons.installation,
+            actors: persons.actors,
+        }
+        return filmInfo;
+    }
+
+    private makeFilmToLoad(el: any) {
+        const film = {
+            name: el.title_ru,
+            nameEn: el.title_en,
+            type: el.type,
+            image: el.poster_film_small,
+            ratingVoteCount: el.ratingKinopoiskVoteCount,
+            rating: +el.rating,
+            filmLength: el.duration,
+            year: +el.year,
+            filmDescription: el.description,
+            filmSpId: +el.filmId,
+            director: el.director,
+            scenario: el.scenario,
+            producer: el.producer,
+            operator: el.operator,
+            composer: el.composer,
+            painter: el.painter,
+            installation: el.installation,
+            actors: el.main_role,
+        }
+        return film;
     }
 }
