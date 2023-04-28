@@ -27,47 +27,70 @@
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Installation
-
+Клонируем проект далее
 ```bash
-$ npm install
+$ npm install (устанавливаем все необходимые зависимости)
 ```
+для полной работы небходим микросервис https://github.com/DgekoTT/PersonsMicroService
+
+#установка RabbitMQ
+$ npm i --save amqplib amqp-connection-manager 
+
+#Configuration
+$ npm i --save @nestjs/config
+
+#Sequelize Integration
+$ npm install --save @nestjs/sequelize sequelize sequelize-typescript
+$ npm install --save-dev @types/sequelize
+
+# Postgres
+$ npm install --save pg pg-hstore 
 
 ## Running the app
 
-```bash
-# development
-$ npm run start
+#через Pgadmin4 
+создаем бд filmmicro
 
-# watch mode
-$ npm run start:dev
+#для запуска сервера
 
-# production mode
-$ npm run start:prod
-```
+npm run start:devFilm
 
-## Test
+#для прослушивания сообщений
+npm run listenFilm
 
-```bash
-# unit tests
-$ npm run test
+API
 
-# e2e tests
-$ npm run test:e2e
+Перед началом работы оправляем запрос 
+@Post http://localhost:5000/countries/load загружаются все страны в бд
 
-# test coverage
-$ npm run test:cov
-```
+@Post http://localhost:5000/genres/load загружаются все жанры в бд
 
-## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Создание фильма
+@Post http://localhost:5000/films через @Body передаем параметры
 
-## Stay in touch
+обновление названия фильма
+@Put http://localhost:5000/films/update через @Body передаем параметры
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+получение фильма по id
+@Get http://localhost:5000/films/:id 
 
-## License
+получение фильма по жанру
+@Get http://localhost:5000/films/genre
 
-Nest is [MIT licensed](LICENSE).
+получение фильма по стране
+@Get http://localhost:5000/films/country
+
+Работа с жанрами
+
+Создать жанр
+@Post http://localhost:5000/genres через @Body передаем параметры
+
+Изменить имя жанра
+@Put http://localhost:5000/genres/update через @Body передаем параметры
+
+Получить все сценарии
+@Get http://localhost:5000/genres/
+
+Получить сценарий по id 
+ @Get http://localhost:5000/genres/:id
