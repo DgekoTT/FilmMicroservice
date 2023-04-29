@@ -31,10 +31,11 @@ export class FilmController {
     // @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
     @Post()
     async createFilm(@Body() dto: CreateFilmDto): Promise<any> {
-        const film = await this.filmService.createFilm(dto);
+        let film = await this.filmService.createFilm(dto);
         const personDto = await this.filmService.makePersonDto(dto, film.id);
         const persons = await firstValueFrom(this.client.send({cmd: 'createPersons'}, JSON.stringify(personDto)))
-        return this.filmService.makeFilmInfo(film, persons);
+        const filmInfo = this.filmService.makeFilmInfo(film);
+        return [filmInfo, persons];
     }
 
     @Post('/load')
@@ -52,19 +53,27 @@ export class FilmController {
 
     @Get('/:id')
     async getFilmById(@Param('id') id: number): Promise<{}>{
-        const persons = await firstValueFrom(this.client.send({cmd: 'getPersons'}, id))
-        const film =await this.filmService.getFilmById(id);
-        return this.filmService.makeFilmInfo(film, persons);
+        const persons = await this.filmService.getPersons(id);
+        const film = await this.filmService.getFilmById(id);
+        const filmInfo = this.filmService.makeFilmInfo(film);
+        return [filmInfo, persons];
     }
 
     @Get('genre')
     getFilmByGenre(@Body() dto: GenreFilmDto,): Promise<Film[]> {
+        /*мы получим фильмы без персонала, когда из списка мы выбираем
+        один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
+        */
         return this.filmService.getFilmByGenre(dto.name);
     }
 
     @Get('country')
-    getFilmCountry(@Body() dto: CountryFilmDto,): Promise<Film[]> {
-        return this.filmService. getFilmCountry(dto.name);
+    async getFilmCountry(@Body() dto: CountryFilmDto): Promise<Film[]> {
+        /*мы получим фильмы без персонала, когда из списка мы выбираем
+        один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
+         */
+        const film = this.filmService. getFilmCountry(dto.name)
+        return film;
     }
 
 }

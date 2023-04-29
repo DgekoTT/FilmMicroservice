@@ -1,5 +1,5 @@
 
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {CreateFilmDto} from "./dto/create-film.dto";
 import {Film} from "./film.model";
@@ -7,6 +7,8 @@ import {GenreService} from "../genre/genre.service";
 import {CountriesService} from "../countries/countries.service";
 import {UpdateFilmDto} from "./dto/update-film.dto";
 import * as fs from "fs";
+import {firstValueFrom} from "rxjs";
+import {ClientProxy} from "@nestjs/microservices";
 
 
 
@@ -16,7 +18,8 @@ export class FilmService {
     //что бы иметь доступ к базе, инжектим модель бд
     constructor(@InjectModel(Film) private filmRepository: typeof Film,
                 private genreService: GenreService,
-                private countriesService: CountriesService) {}
+                private countriesService: CountriesService,
+                @Inject("FILM_SERVICE") private readonly client: ClientProxy) {}
 
     async createFilm(dto: CreateFilmDto) {
         const newFilm = await this.filmRepository.create(dto);
@@ -96,13 +99,14 @@ export class FilmService {
             let film = this.makeFilmToLoad(el)
             if(!filmSpId.includes(film.filmSpId)) {
                 filmSpId.push(film.filmSpId);
-                await this.filmRepository.create(film)
+                let filmData = await this.filmRepository.create(film);
+                await this.createPersons(film, filmData.id);
             }
         }
     }
 
 
-    async makePersonDto(dto: CreateFilmDto, id: number): Promise<any> {
+    async makePersonDto(dto: any, id: number): Promise<any> {
         const persons = {
             filmId: id,
             director: dto.director,
@@ -117,7 +121,7 @@ export class FilmService {
         return persons;
     }
 
-    makeFilmInfo(film: Film, persons: any) {
+    makeFilmInfo(film: Film) {
         const filmInfo = {
             id: film.id,
             name: film.name,
@@ -130,14 +134,6 @@ export class FilmService {
             year: film.year,
             filmDescription: film.filmDescription,
             filmSpId: film.filmSpId,
-            director: persons.director,
-            scenario: persons.scenario,
-            producer: persons.producer,
-            operator: persons.operator,
-            composer: persons.composer,
-            painter: persons.painter,
-            installation: persons.installation,
-            actors: persons.actors,
         }
         return filmInfo;
     }
@@ -164,5 +160,34 @@ export class FilmService {
             actors: el.main_role,
         }
         return film;
+    }
+
+    //создаем персон фильма, если микросервис персон не ответит, получим пустой массив
+    async createPersons(dto: any, id: number) {
+        const personDto = await this.makePersonDto(dto, id);
+        const timeoutPromise = new Promise(resolve => setTimeout(resolve, 3000, []));
+        const personsPromise = await firstValueFrom(this.client.send({cmd: 'createPersons'}, JSON.stringify(personDto)));
+        let persons;
+        try {
+            persons = await Promise.race([personsPromise, timeoutPromise])
+        } catch (err) {
+            console.error(`Error while getting persons for film ${id}: ${err.message}`);
+            persons = [];
+        }
+        return persons;
+    }
+
+    //получаем персон фильма, если микросервис персон не ответит, получим пустой массив
+    async getPersons(id: number): Promise<any> {
+        const timeoutPromise = new Promise(resolve => setTimeout(resolve, 3000, []));
+        const personsPromise = firstValueFrom(this.client.send({ cmd: 'getPersons' }, id));
+        let persons;
+        try {
+            persons = await Promise.race([personsPromise, timeoutPromise]);
+        } catch (err) {
+            console.error(`Error while getting persons for film ${id}: ${err.message}`);
+            persons = [];
+        }
+        return persons;
     }
 }
