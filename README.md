@@ -66,6 +66,7 @@ API
 
 @Post http://localhost:5000/genres/load загружаются все жанры в бд
 
+@Post http://localhost:5000/films/load загружаются все фильмы в бд
 
 Создание фильма
 @Post http://localhost:5000/films через @Body передаем параметры
