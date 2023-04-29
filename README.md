@@ -83,6 +83,12 @@ API
 получение фильма по стране
 @Get http://localhost:5000/films/country
 
+получение фильма по рейтингу
+@Get http://localhost:5000/films/rating/:rating
+
+получение фильма по количеству оценок
+@Get http://localhost:5000/films/amount/:amount
+
 Работа с жанрами
 
 Создать жанр
