@@ -210,4 +210,22 @@ export class FilmService {
             }})
         return films;
     }
+
+    async getSortedFilms(sortBy: string[], sortOrder: string): Promise<Film[]> {
+        let sortClause = [];
+        if (sortBy.includes('rating')) {
+            sortClause.push(['rating', sortOrder]);
+        }
+        if (sortBy.includes('ratingVoteCount')) {
+            sortClause.push(['ratingVoteCount', sortOrder]);
+        }
+        if (sortBy.includes('releaseDate')) {
+            sortClause.push(['releaseDate', sortOrder]);
+        }
+        if (sortBy.includes('title')) {
+            sortClause.push(['title', sortOrder]);
+        }
+        const films = await this.filmRepository.findAll({order: sortClause});
+        return films;
+    }
 }

@@ -59,7 +59,7 @@ export class FilmController {
         return [filmInfo, persons];
     }
 
-    @Get("/:rating")
+    @Get("/rating/:rating")
     async getFilmRating(@Param('rating') rating: number): Promise<Film[]> {
         /*мы получим фильмы без персонала, когда из списка мы выбираем
         один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
@@ -67,7 +67,7 @@ export class FilmController {
         return this.filmService.getFilmRating(rating);
     }
 
-    @Get("/:amount")
+    @Get("/amount/:amount")
     async getFilmRatingVoteCount(@Param('amount') amount: number): Promise<Film[]> {
         /*мы получим фильмы без персонала, когда из списка мы выбираем
         один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
@@ -91,5 +91,11 @@ export class FilmController {
         const film = this.filmService. getFilmCountry(dto.name)
         return film;
     }
+
+    @Get('/sorting')
+    getSortedFilms(@Body() sortBy: string[], sortOrder: string): Promise<Film[]>{
+        return this.filmService.getSortedFilms(sortBy, sortOrder);
+    }
+
 
 }
