@@ -9,6 +9,8 @@ import {UpdateFilmDto} from "./dto/update-film.dto";
 import * as fs from "fs";
 import {firstValueFrom} from "rxjs";
 import {ClientProxy} from "@nestjs/microservices";
+import {annotateModelWithIndex} from "sequelize-typescript";
+import {Op} from "sequelize";
 
 
 
@@ -189,5 +191,23 @@ export class FilmService {
             persons = [];
         }
         return persons;
+    }
+
+    async getFilmRating(rating: number): Promise<Film[]> {
+        const films = await this.filmRepository.findAll({where: {
+            rating: {
+                [Op.gt]: rating
+            }
+            }})
+        return films;
+    }
+
+    async getFilmRatingVoteCount(amount: number): Promise<Film[]>  {
+        const films = await this.filmRepository.findAll({where: {
+                ratingVoteCount: {
+                    [Op.gt]: amount
+                }
+            }})
+        return films;
     }
 }

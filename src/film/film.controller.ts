@@ -59,6 +59,22 @@ export class FilmController {
         return [filmInfo, persons];
     }
 
+    @Get("/:rating")
+    async getFilmRating(@Param('rating') rating: number): Promise<Film[]> {
+        /*мы получим фильмы без персонала, когда из списка мы выбираем
+        один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
+        */
+        return this.filmService.getFilmRating(rating);
+    }
+
+    @Get("/:amount")
+    async getFilmRatingVoteCount(@Param('amount') amount: number): Promise<Film[]> {
+        /*мы получим фильмы без персонала, когда из списка мы выбираем
+        один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
+        */
+        return this.filmService.getFilmRatingVoteCount(amount);
+    }
+
     @Get('genre')
     getFilmByGenre(@Body() dto: GenreFilmDto,): Promise<Film[]> {
         /*мы получим фильмы без персонала, когда из списка мы выбираем
