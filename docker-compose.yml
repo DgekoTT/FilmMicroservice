@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3'
 services:
   db1:
     image: postgres:latest
@@ -22,7 +22,7 @@ services:
       RABBITMQ_DEFAULT_PASS: guest
       RABBITMQ_HOST: rabbitmq
     ports:
-      - "5673:5672"
+      - "5672:5672"
 
 
 
@@ -44,6 +44,19 @@ services:
     ports:
       - "5000:5000"
 
+  listener-persons:
+    build: ./PersonsMicroService/
+    depends_on:
+      - db1
+      - rabbitmq
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      POSTGRES_HOST: db1
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_PORT: 5432
+    command: npm run PersonsListenerDD
 
 
   app-person:
