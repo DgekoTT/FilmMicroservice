@@ -2,9 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import {Transport} from "@nestjs/microservices";
 
-/*"FilmListener":"nest start --watch --config listener.json",
-что бы микросервис работал параллельно с прослушивание порта
-добавляем в package.json*/
+
 async function microService() {
 
     const app = await NestFactory.createMicroservice(AppModule,{
