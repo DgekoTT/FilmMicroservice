@@ -15,7 +15,7 @@ import {HttpModule} from "@nestjs/axios";
 @Module({
   imports: [
       HttpModule.register({
-        baseURL: 'http://localhost:5000',
+        baseURL: `${process.env.APP_BASE_URL}`,
         timeout: 5000, // время ожидания ответа
         headers: { 'Access-Control-Allow-Origin': '*' }, // разрешить CORS для всех источников
   }),
