@@ -10,10 +10,17 @@ import {Countries} from "./countries/countries.model";
 import {Genres} from "./genre/genre.model";
 import {GenresFilm} from "./film/film-genres.model";
 import {CountriesFilm} from "./film/film-countries.model";
+import {HttpModule} from "@nestjs/axios";
 
 
 @Module({
-  imports: [      // что бы нест всю конфигурацию считывал
+  imports: [
+      HttpModule.register({
+        baseURL: 'http://localhost:5000',
+        timeout: 5000, // время ожидания ответа
+        headers: { 'Access-Control-Allow-Origin': '*' }, // разрешить CORS для всех источников
+  }),
+      // что бы нест всю конфигурацию считывал
     ConfigModule.forRoot({
       envFilePath: `.${process.env.NODE_ENV}.env`   /*получаем конфигурации
          для разработки и для продакшена, нужно npm i cross-env*/
