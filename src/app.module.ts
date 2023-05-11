@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import path from "path";
 import {SequelizeModule} from "@nestjs/sequelize";
 import {ConfigModule} from "@nestjs/config";
 import {FilmModule} from "./film/film.module";
