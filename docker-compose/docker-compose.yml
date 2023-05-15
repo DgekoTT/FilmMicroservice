@@ -76,5 +76,5 @@ services:
     env_file:
       - .environment.env
     ports:
-      - "5010:5015"
+      - "5015:5010"
 
