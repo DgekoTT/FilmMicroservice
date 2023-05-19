@@ -36,9 +36,9 @@ services:
       - rabbitmq
     env_file:
       - .environment.env
-
     ports:
       - "5000:5000"
+
 
   listener-persons:
     build: ./PersonsMicroService/
@@ -77,4 +77,20 @@ services:
       - .environment.env
     ports:
       - "5010:5010"
+
+  comments:
+    container_name: comments
+    build:
+      context: ./commentsMicroService/
+    restart: always
+    env_file:
+      - .environment.env
+    volumes:
+      - .:/app
+      - /app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db1
+
 
