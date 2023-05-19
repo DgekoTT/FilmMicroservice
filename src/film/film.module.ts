@@ -1,5 +1,5 @@
 
-import { Module } from '@nestjs/common';
+import {Module} from '@nestjs/common';
 import { FilmService } from './film.service';
 import { FilmController } from './film.controller';
 import {SequelizeModule} from "@nestjs/sequelize";
@@ -11,13 +11,19 @@ import {CountriesModule} from "../countries/countries.module";
 import {GenresFilm} from "./film-genres.model";
 import {CountriesFilm} from "./film-countries.model";
 import {ClientsModule, Transport} from "@nestjs/microservices";
+import {JwtModule} from "@nestjs/jwt";
 
 
 
 @Module({
   providers: [FilmService],
   controllers: [FilmController],
-  imports: [ClientsModule.register([
+  imports: [ JwtModule.register({
+    secret: "FFFGKJKFWMV",
+    signOptions: {//время жизни токена
+      expiresIn: '24h'
+    }}),
+      ClientsModule.register([
         {
           name: 'FILM_SERVICE',
           transport: Transport.RMQ,
@@ -27,12 +33,14 @@ import {ClientsModule, Transport} from "@nestjs/microservices";
             queueOptions: {
               durable: false
             },
+
           },
         },
     ]),
     SequelizeModule.forFeature([Film, Countries, Genres, GenresFilm, CountriesFilm]),
     GenreModule,
     CountriesModule,
+    JwtModule,
   ],
   exports: [
       FilmService

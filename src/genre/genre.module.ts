@@ -4,6 +4,7 @@ import { Genres} from "./genre.model";
 import {GenreController} from "./genre.controller";
 import {GenreService} from "./genre.service";
 import {GenresFilm} from "../film/film-genres.model";
+import {JwtModule} from "@nestjs/jwt";
 
 
 
@@ -11,6 +12,7 @@ import {GenresFilm} from "../film/film-genres.model";
   providers: [GenreService],
   controllers: [GenreController],
   imports: [SequelizeModule.forFeature([Genres, GenresFilm]),
+      JwtModule,
   ],
   exports: [GenreService]
 })

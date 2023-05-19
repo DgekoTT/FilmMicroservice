@@ -15,21 +15,19 @@ export class CountriesService {
 
     async getCountries(countries: string[]): Promise<Countries[]>{
         countries = countries.map(el => el.trim());
-        let countriesInDb = await this.countriesRepository.findAll({
+        return await this.countriesRepository.findAll({
             where: {
                 name: { [Op.in]: countries }
             }
         })
-        return countriesInDb;
     }
 
     async getCountryId(country: string): Promise<Countries> {
-        let countryObj = await this.countriesRepository.findOne({
+       return  await this.countriesRepository.findOne({
             where: {
                 name: {country}
             }
         })
-        return countryObj;
     }
 
     //загружаем страны из файла в базу

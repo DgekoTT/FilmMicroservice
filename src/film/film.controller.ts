@@ -4,10 +4,9 @@ import {
     Controller,
     Get, Inject, Param,
     Post,
-    Put,
+    Put, UseGuards,
 } from '@nestjs/common';
 import {FilmService} from "./film.service";
-
 import {CreateFilmDto} from "./dto/create-film.dto";
 import {UpdateFilmDto} from "./dto/update-film.dto";
 import {Film} from "./film.model";
@@ -15,6 +14,8 @@ import {GenreFilmDto} from "./dto/genre-film.dto";
 import {CountryFilmDto} from "./dto/get.country-film.dto";
 import {ClientProxy} from "@nestjs/microservices";
 import {firstValueFrom} from "rxjs";
+import {Roles} from "../Guards/roles-auth.decorator";
+import {RolesGuard} from "../Guards/role.guard";
 
 
 
@@ -26,9 +27,9 @@ export class FilmController {
     constructor(private filmService: FilmService,
                 @Inject("FILM_SERVICE") private readonly client: ClientProxy) {
     }
-
-    // @Roles("admin")
-    // @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
+    
+    @Roles("admin")
+    @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
     @Post()
     async createFilm(@Body() dto: CreateFilmDto): Promise<any> {
         let film = await this.filmService.createFilm(dto);
@@ -44,8 +45,8 @@ export class FilmController {
     }
 
 
-    // @Roles("admin")
-    // @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
+    @Roles("admin")
+    @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
     @Put('/update')
     updateFilm(@Body() dto: UpdateFilmDto,): Promise<string> {
         return this.filmService.updateFilm(dto);
@@ -88,8 +89,7 @@ export class FilmController {
         /*мы получим фильмы без персонала, когда из списка мы выбираем
         один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
          */
-        const film = this.filmService. getFilmCountry(dto.name)
-        return film;
+       return this.filmService. getFilmCountry(dto.name)
     }
 
     @Get('/sorting')
