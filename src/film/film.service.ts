@@ -9,7 +9,6 @@ import {UpdateFilmDto} from "./dto/update-film.dto";
 import * as fs from "fs";
 import {firstValueFrom} from "rxjs";
 import {ClientProxy} from "@nestjs/microservices";
-import {annotateModelWithIndex} from "sequelize-typescript";
 import {Op} from "sequelize";
 
 
