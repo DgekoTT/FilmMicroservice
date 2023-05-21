@@ -23,7 +23,7 @@ export class FilmService {
                 private countriesService: CountriesService,
                 @Inject("FILM_SERVICE") private readonly client: ClientProxy) {}
 
-    async createFilm(dto: CreateFilmDto) {
+    async createFilm(dto: CreateFilmDto): Promise<Film> {
         const newFilm = await this.filmRepository.create(dto);
         const countriesObj = await this.countriesService.getCountries(dto.countries.split(','))
         const countriesId = countriesObj.map(el => el.id);
@@ -35,7 +35,7 @@ export class FilmService {
     }
 
     async updateFilm(dto: UpdateFilmDto): Promise<string> {
-    const film = this.checkerFilm(dto.id);
+    const film = this.getFilmById(dto.id);
     await this.filmRepository.update(
         {name: dto.name, nameEn: dto.nameEn},
         {where: {id: dto.id}}
@@ -45,41 +45,38 @@ export class FilmService {
     }
 
     async getFilmById(id: number): Promise<Film> {
-        const film = await this.filmRepository.findOne({where: {id}, include: {all: true}});
+        const film =  await this.filmRepository.findOne({where: {id}, include: {all: true}});
+        await this.checkerFilm(film)
         return film;
-
     }
 
 
-    async checkerFilm(id: number ): Promise<Film> {
-        const isFilm = await this.getFilmById(id);
-        if (!isFilm) {
-            throw new HttpException('Блок с данным id не найден', HttpStatus.NOT_FOUND)
+    async checkerFilm(film: Film ){
+        if (!film) {
+            throw new HttpException('Фильм с данным id не найден', HttpStatus.NOT_FOUND)
         }
-        return isFilm;
     }
 
 
     async getFilmByGenre(genre: string): Promise<Film[]> {
         const genreObj = await this.genreService.getGenreId(genre);
-        const filmByGenre = await this.filmRepository.findAll({
+       return  await this.filmRepository.findAll({
             where: {
                 // @ts-ignore
                 genre: `${genreObj.id}`
             }
         });
-        return filmByGenre;
     }
 
     async getFilmCountry(country: string): Promise<Film[]>  {
         const countryObj = await this.countriesService.getCountryId(country);
-        const filmByCountry = await this.filmRepository.findAll({
+       return await this.filmRepository.findAll({
             where: {
                 // @ts-ignore
                 countries: `${countryObj.id}`
             }
         });
-        return filmByCountry;
+
     }
 
     async loadFilms(): Promise<string> {
@@ -108,8 +105,8 @@ export class FilmService {
     }
 
 
-    async makePersonDto(dto: any, id: number): Promise<any> {
-        const persons = {
+    async makePersonDto(dto: any, id: number): Promise<{}> {
+       return  {
             filmId: id,
             director: dto.director,
             scenario: dto.scenario,
@@ -120,11 +117,10 @@ export class FilmService {
             installation: dto.installation,
             actors: dto.actors
         }
-        return persons;
     }
 
     makeFilmInfo(film: Film) {
-        const filmInfo = {
+        return {
             id: film.id,
             name: film.name,
             nameEn: film.nameEn,
@@ -137,11 +133,10 @@ export class FilmService {
             filmDescription: film.filmDescription,
             filmSpId: film.filmSpId,
         }
-        return filmInfo;
     }
 
     private makeFilmToLoad(el: any) {
-        const film = {
+        return  {
             name: el.title_ru,
             nameEn: el.title_en,
             type: el.type,
@@ -161,11 +156,10 @@ export class FilmService {
             installation: el.installation,
             actors: el.main_role,
         }
-        return film;
     }
 
     //создаем персон фильма, если микросервис персон не ответит, получим пустой массив
-    async createPersons(dto: any, id: number) {
+    async createPersons(dto: any, id: number): Promise<{}>  {
         const personDto = await this.makePersonDto(dto, id);
         const timeoutPromise = new Promise(resolve => setTimeout(resolve, 3000, []));
         const personsPromise = await firstValueFrom(this.client.send({cmd: 'createPersons'}, JSON.stringify(personDto)));
@@ -180,7 +174,7 @@ export class FilmService {
     }
 
     //получаем персон фильма, если микросервис персон не ответит, получим пустой массив
-    async getPersons(id: number): Promise<any> {
+    async getPersons(id: number): Promise<{}> {
         const timeoutPromise = new Promise(resolve => setTimeout(resolve, 3000, []));
         const personsPromise = firstValueFrom(this.client.send({ cmd: 'getPersons' }, id));
         let persons;
@@ -194,21 +188,19 @@ export class FilmService {
     }
 
     async getFilmRating(rating: number): Promise<Film[]> {
-        const films = await this.filmRepository.findAll({where: {
+        return await this.filmRepository.findAll({where: {
             rating: {
                 [Op.gt]: rating
             }
             }})
-        return films;
     }
 
     async getFilmRatingVoteCount(amount: number): Promise<Film[]>  {
-        const films = await this.filmRepository.findAll({where: {
+       return await this.filmRepository.findAll({where: {
                 ratingVoteCount: {
                     [Op.gt]: amount
                 }
             }})
-        return films;
     }
 
     async getSortedFilms(sortBy: string[], sortOrder: string): Promise<Film[]> {
@@ -219,13 +211,19 @@ export class FilmService {
         if (sortBy.includes('ratingVoteCount')) {
             sortClause.push(['ratingVoteCount', sortOrder]);
         }
-        if (sortBy.includes('releaseDate')) {
-            sortClause.push(['releaseDate', sortOrder]);
+        if (sortBy.includes('year')) {
+            sortClause.push(['year', sortOrder]);
         }
-        if (sortBy.includes('title')) {
-            sortClause.push(['title', sortOrder]);
+        if (sortBy.includes('name')) {
+            sortClause.push(['name', sortOrder]);
         }
-        const films = await this.filmRepository.findAll({order: sortClause});
-        return films;
+       return await this.filmRepository.findAll({order: sortClause});
+    }
+    async getFilmBySpId(SpId: number): Promise<Film> {
+        const film =  await this.filmRepository.findOne({where: {
+                filmSpId: SpId
+            }, include: {all: true}});
+        await this.checkerFilm(film)
+        return film;
     }
 }

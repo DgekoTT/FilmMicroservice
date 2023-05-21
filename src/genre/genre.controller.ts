@@ -6,7 +6,7 @@ import {UpdateGenreDto} from "./dto/update.genre.dto";
 import {Genres} from "./genre.model";
 import {Roles} from "../Guards/roles-auth.decorator";
 import {RolesGuard} from "../Guards/role.guard";
-import {ApiOperation, ApiResponse} from "@nestjs/swagger";
+import {ApiCookieAuth, ApiOperation, ApiResponse} from "@nestjs/swagger";
 
 
 @Controller('genres')
@@ -47,6 +47,7 @@ export class GenreController {
         return this.genreService.getGenreById(id);
     }
 
+    @ApiCookieAuth()
     @ApiOperation({summary: 'загружаем все жанры из файла'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: String, isArray: false})
     @Roles("admin")

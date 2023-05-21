@@ -7,7 +7,7 @@ import {
 import {CountriesService} from "./countries.service";
 import {Roles} from "../Guards/roles-auth.decorator";
 import {RolesGuard} from "../Guards/role.guard";
-import {ApiOperation, ApiResponse} from "@nestjs/swagger";
+import {ApiCookieAuth, ApiOperation, ApiResponse} from "@nestjs/swagger";
 
 @Controller('countries')
 export class CountriesController {
@@ -15,6 +15,7 @@ export class CountriesController {
 
     constructor(private countriesService: CountriesService) {}
 
+    @ApiCookieAuth()
     @ApiOperation({summary: 'загружаем все страны из файла'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: String, isArray: false})
     @Roles("admin")
