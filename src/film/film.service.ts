@@ -218,6 +218,7 @@ export class FilmService {
         }
        return await this.filmRepository.findAll({order: sortClause});
     }
+
     async getFilmBySpId(SpId: number): Promise<Film> {
         const film =  await this.filmRepository.findOne({where: {
                 filmSpId: SpId
@@ -225,4 +226,12 @@ export class FilmService {
         await this.checkerFilm(film)
         return film;
     }
+
+
+    async getRandom20(): Promise<Film[]>  {
+        return this.filmRepository.findAll({
+            order: this.filmRepository.sequelize?.random(), // Используем random() для случайной сортировки
+            limit: 20
+        })}
+
 }

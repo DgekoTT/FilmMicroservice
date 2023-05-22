@@ -30,6 +30,14 @@ export class FilmController {
                 @Inject("FILM_SERVICE") private readonly client: ClientProxy) {
     }
 
+    @ApiOperation({summary: 'получаем 20 фильмы'})
+    @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
+    @Get('/random')
+    getRandom20(): Promise<Film[]> {
+        return this.filmService.getRandom20();
+    }
+
+
     @ApiCookieAuth()
     @ApiOperation({summary: 'создание фильма'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
@@ -44,6 +52,7 @@ export class FilmController {
         const filmInfo = this.filmService.makeFilmInfo(film);
         return [filmInfo, persons];
     }
+
     @ApiCookieAuth()
     @ApiOperation({summary: 'загрузка фильмов в бд из файлов через цикл'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: String, isArray: false})
@@ -131,6 +140,5 @@ export class FilmController {
     getSortedFilms(@Body() sortBy: string[], sortOrder: string): Promise<Film[]>{
         return this.filmService.getSortedFilms(sortBy, sortOrder);
     }
-
 
 }
