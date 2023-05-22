@@ -33,8 +33,8 @@ export class FilmController {
     @ApiOperation({summary: 'получаем 20 фильмы'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
     @Get('/random')
-    getRandom20(): Promise<Film[]> {
-        return this.filmService.getRandom20();
+    getRandom30(): Promise<Film[]> {
+        return this.filmService.getRandom30();
     }
 
 

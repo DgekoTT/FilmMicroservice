@@ -22,6 +22,25 @@ export class FilmService {
                 private countriesService: CountriesService,
                 @Inject("FILM_SERVICE") private readonly client: ClientProxy) {}
 
+
+    async getRandom30(): Promise<Film[]>  {
+        const  nums = this.getRandomNums();
+        return await this.filmRepository.findAll({
+            where: {
+                id: {[Op.in]: nums}
+            }
+        });
+    }
+
+    getRandomNums() {
+        const num  = [];
+        for (let s = 0; s < 31; s++) {
+            num.push(Math.floor(Math.random() * (1910 - 1 + 1)) +1)
+        }
+        return num
+    }
+
+
     async createFilm(dto: CreateFilmDto): Promise<Film> {
         const newFilm = await this.filmRepository.create(dto);
         const countriesObj = await this.countriesService.getCountries(dto.countries.split(','))
@@ -227,11 +246,5 @@ export class FilmService {
         return film;
     }
 
-
-    async getRandom20(): Promise<Film[]>  {
-        return this.filmRepository.findAll({
-            order: this.filmRepository.sequelize?.random(), // Используем random() для случайной сортировки
-            limit: 20
-        })}
 
 }
