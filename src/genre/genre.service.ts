@@ -14,18 +14,15 @@ export class GenreService {
     constructor(@InjectModel(Genres) private genreRepository: typeof Genres) {
     }
     async createGenre(dto: CreateGenreDto) {
-        const genre = await this.genreRepository.create(dto);
-        return genre;
+        return await this.genreRepository.create(dto);
     }
 
     async getGenreById(id: number) {
-        const genre = await this.genreRepository.findOne({where: {id : id}});
-        return genre;
+        return await this.genreRepository.findOne({where: {id : id}});
     }
 
     async getAllGenres() {
-        const allGenres= await this.genreRepository.findAll();
-        return allGenres;
+        return await this.genreRepository.findAll();
     }
 
     async updateGenre(dto: UpdateGenreDto) {
@@ -49,21 +46,20 @@ export class GenreService {
 
     async getGenre(genre: string[]): Promise<Genres[]> {
         genre = genre.map(el => el.trim());
-        let genresInDb = await this.genreRepository.findAll({
+        return await this.genreRepository.findAll({
             where: {
                 name: { [Op.in]: genre }
             }
         })
-        return genresInDb;
     }
 
     async getGenreId(genre: string): Promise<Genres> {
-        let genreObj = await this.genreRepository.findOne({
+        return await this.genreRepository.findOne({
             where: {
                 name: {genre}
             }
         })
-        return genreObj;
+
     }
     //загружаем жанры из файла в базу
    async loadGenres(): Promise<string> {
