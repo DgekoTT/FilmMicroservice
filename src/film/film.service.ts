@@ -32,12 +32,12 @@ export class FilmService {
         });
     }
 
-    getRandomNums() {
+    getRandomNums(): number[] {
         const num  = [];
         for (let s = 0; s < 31; s++) {
             num.push(Math.floor(Math.random() * (1910 - 1 + 1)) +1)
         }
-        return num
+        return num;
     }
 
 

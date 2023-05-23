@@ -1,5 +1,5 @@
 
-import {Injectable} from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {Op} from "sequelize";
 import {Countries} from "./countries.model";
@@ -38,6 +38,7 @@ export class CountriesService {
             let res = await this.countriesRepository.bulkCreate(countries);
         } catch (err) {
             console.error(err);
+            throw new HttpException('Ошибка загрузки', HttpStatus.INTERNAL_SERVER_ERROR)
         }
         return `Страны загружены в базу данных`
     }
