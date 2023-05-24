@@ -30,7 +30,7 @@ export class FilmController {
                 @Inject("FILM_SERVICE") private readonly client: ClientProxy) {
     }
 
-    @ApiOperation({summary: 'получаем 20 фильмы'})
+    @ApiOperation({summary: 'получаем 30 фильмы'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
     @Get('/random')
     getRandom30(): Promise<Film[]> {
@@ -84,7 +84,7 @@ export class FilmController {
         return [filmInfo, persons];
     }
 
-    @ApiOperation({summary: 'получения фильма по id'})
+    @ApiOperation({summary: 'получения фильма по filmSpId'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
     @Get('/sp/:id')
     async getFilmBySpId(@Param('id') id: number): Promise<{}>{
