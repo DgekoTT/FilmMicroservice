@@ -12,11 +12,12 @@ import {GenresFilm} from "./film-genres.model";
 import {CountriesFilm} from "./film-countries.model";
 import {ClientsModule, Transport} from "@nestjs/microservices";
 import {JwtModule} from "@nestjs/jwt";
+import {Helper} from "../helper/makeFilmAndPersons";
 
 
 
 @Module({
-  providers: [FilmService],
+  providers: [FilmService, Helper],
   controllers: [FilmController],
   imports: [ JwtModule.register({
     secret: "FFFGKJKFWMV",

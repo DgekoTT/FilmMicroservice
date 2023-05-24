@@ -15,6 +15,7 @@ import {RolesGuard} from "./Guards/role.guard";
 import {JwtModule} from "@nestjs/jwt";
 
 
+
 @Module({
   imports: [
       HttpModule.register({
@@ -46,7 +47,7 @@ import {JwtModule} from "@nestjs/jwt";
     }),
     FilmModule,
     CountriesModule,
-    GenreModule
+    GenreModule,
   ],
   controllers: [],
   providers: [JwtAuthGuard, RolesGuard],

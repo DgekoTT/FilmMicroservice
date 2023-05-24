@@ -18,6 +18,7 @@ import {Roles} from "../Guards/roles-auth.decorator";
 import {RolesGuard} from "../Guards/role.guard";
 import {ApiCookieAuth, ApiOperation, ApiResponse} from "@nestjs/swagger";
 import {ValidationPipe} from "../pipes/validation.pipe";
+import { Helper} from "../helper/makeFilmAndPersons";
 
 
 
@@ -27,8 +28,12 @@ export class FilmController {
 
 
     constructor(private filmService: FilmService,
-                @Inject("FILM_SERVICE") private readonly client: ClientProxy) {
+                @Inject("FILM_SERVICE") private readonly client: ClientProxy,
+                private helper: Helper) {
+
+        this.helper = new Helper()
     }
+
 
     @ApiOperation({summary: 'получаем 30 фильмы'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
@@ -45,12 +50,12 @@ export class FilmController {
     @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
     @UsePipes(ValidationPipe)
     @Post()
-    async createFilm(@Body() dto: CreateFilmDto): Promise<[{}, {}] > {
+    async createFilm(@Body() dto: CreateFilmDto): Promise<{}> {
         let film = await this.filmService.createFilm(dto);
         const personDto = await this.filmService.makePersonDto(dto, film.id);
         const persons = await firstValueFrom(this.client.send({cmd: 'createPersons'}, JSON.stringify(personDto)))
         const filmInfo = this.filmService.makeFilmInfo(film);
-        return [filmInfo, persons];
+        return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
     }
 
     @ApiCookieAuth()
@@ -81,7 +86,7 @@ export class FilmController {
         const persons = await this.filmService.getPersons(id);
         const film = await this.filmService.getFilmById(id);
         const filmInfo = this.filmService.makeFilmInfo(film);
-        return [filmInfo, persons];
+        return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
     }
 
     @ApiOperation({summary: 'получения фильма по filmSpId'})
@@ -91,7 +96,7 @@ export class FilmController {
         const film = await this.filmService.getFilmBySpId(id);
         const persons = await this.filmService.getPersons(film.id);
         const filmInfo = this.filmService.makeFilmInfo(film);
-        return [filmInfo, persons];
+        return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
     }
 
     @ApiOperation({summary: 'получаем фильм по рейтингу'})
