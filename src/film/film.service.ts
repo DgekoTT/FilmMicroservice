@@ -90,6 +90,9 @@ export class FilmService {
 
     async getFilmCountry(country: string) {
         const countryObj = await this.countriesService.getCountryId(country);
+        if(!countryObj) {
+            return 'этой страны нет в базе '
+        }
         let arrayId = await this.repositoryCountriesFilm.findAll({where: {
                 countryId: countryObj.id
             }});
