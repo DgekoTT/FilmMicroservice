@@ -116,7 +116,7 @@ export class FilmService {
     }
 
     async loadFilms(): Promise<string> {
-        for (let i=0; i < 1; i++) {// Проходим по всем файлам в папке
+        for (let i=0; i < 21; i++) {// Проходим по всем файлам в папке
             try{
                 let data = fs.readFileSync(`./src/film/filmData/filmsWithId${i}New.json`, 'utf8')
                 let info = JSON.parse(data);
