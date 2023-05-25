@@ -19,6 +19,7 @@ import {RolesGuard} from "../Guards/role.guard";
 import {ApiCookieAuth, ApiOperation, ApiResponse} from "@nestjs/swagger";
 import {ValidationPipe} from "../pipes/validation.pipe";
 import { Helper} from "../helper/makeFilmAndPersons";
+import {FilmInfo} from "../interfaces/film.interfacs";
 
 
 
@@ -38,7 +39,7 @@ export class FilmController {
     @ApiOperation({summary: 'получаем 30 фильмы'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
     @Get('/random')
-    getRandom30(): Promise<Film[]> {
+    getRandom30(): Promise<FilmInfo[]> {
         return this.filmService.getRandom30();
     }
 
@@ -102,32 +103,32 @@ export class FilmController {
     @ApiOperation({summary: 'получаем фильм по рейтингу'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
     @Get("/rating/:rating")
-    async getFilmRating(@Param('rating') rating: number): Promise<Film[]> {
+    async getFilmByRating(@Param('rating') rating: number): Promise<Film[]> {
         /*мы получим фильмы без персонала, когда из списка мы выбираем
         один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
         */
-        return this.filmService.getFilmRating(rating);
+        return this.filmService.getFilmByRating(rating);
     }
 
     @ApiOperation({summary: 'получаем фильм по количеству оценок'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
     @Get("/amount/:amount")
-    async getFilmRatingVoteCount(@Param('amount') amount: number): Promise<Film[]> {
+    async getFilBymRatingVoteCount(@Param('amount') amount: number): Promise<Film[]> {
         /*мы получим фильмы без персонала, когда из списка мы выбираем
         один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
         */
-        return this.filmService.getFilmRatingVoteCount(amount);
+        return this.filmService.getFilmByRatingVoteCount(amount);
     }
 
-    // @ApiOperation({summary: 'получаем фильмы по жанру'})
-    // @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
-    // @Get('/genre')
-    // getFilmByGenre(@Body() dto: GenreFilmDto,): Promise<Film[]> {
-    //     /*мы получим фильмы без персонала, когда из списка мы выбираем
-    //     один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
-    //     */
-    //     return this.filmService.getFilmByGenre(dto.name);
-    // }
+    @ApiOperation({summary: 'получаем фильмы по жанру'})
+    @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
+    @Get('/genre')
+    getFilmByGenre(@Body() dto: GenreFilmDto,) {
+        /*мы получим фильмы без персонала, когда из списка мы выбираем
+        один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
+        */
+        return this.filmService.getFilmByGenre(dto.name);
+    }
 
     @ApiOperation({summary: 'получаем фильмы по сртране'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})

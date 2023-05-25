@@ -16,6 +16,7 @@ import {Genres} from "../genre/genre.model";
 import {CountriesFilm} from "./film-countries.model";
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import {GenresFilm} from "./film-genres.model";
 
 
 
@@ -24,19 +25,18 @@ export class FilmService {
     //что бы иметь доступ к базе, инжектим модель бд
     constructor(@InjectModel(Film) private filmRepository: typeof Film,
                 @InjectModel(CountriesFilm) private repositoryCountriesFilm: typeof CountriesFilm,
+                @InjectModel(GenresFilm) private repositoryGenresFilm: typeof GenresFilm,
                 private genreService: GenreService,
                 private countriesService: CountriesService,
                 @Inject(CACHE_MANAGER) private cacheManager: Cache,
                 @Inject("FILM_SERVICE") private readonly client: ClientProxy) {}
 
 
-    async getRandom30(): Promise<Film[]>  {
+    async getRandom30(): Promise<FilmInfo[]>  {
         const  nums = this.getRandomNums();
-        return await this.filmRepository.findAll({
-            where: {
-                id: {[Op.in]: nums}
-            }, include: {all: true}
-        });
+        const films =  await this.getFilmsByIds(nums);
+        return films.map(film => this.makeFilmInfo(film))
+
     }
 
     getRandomNums(): number[] {
@@ -79,16 +79,26 @@ export class FilmService {
     }
 
 
-    // async getFilmByGenre(genre: string[]): Promise<Film[]> {
-    //     const genreObj = await this.genreService.getGenreId(genre);
-    //     console.log(genreObj)
-    //     return  await this.filmRepository.findAll({
-    //         where: {
-    //             // @ts-ignore
-    //             genre: `${genreObj.id}`
-    //         }, include: {all: true}
-    //     });
-    // }
+    async getFilmByGenre(genre: string[]){
+        const genreObj = await this.genreService.getGenreId(genre);
+        const genreId = genreObj.map(el => el.id)
+
+        const cacheKey = `getFilmCountry:${genreObj.join()}`;
+        const cachedResult = await this.cacheManager.get(cacheKey);
+        if (cachedResult) {
+            return cachedResult;
+        }
+
+        const id = await this.getFilmIdsByGenre(genreId);
+        const films = await this.getFilmsByIds(id);
+        const filmInfo = films.map(film => this.makeFilmInfo(film))
+
+
+        await this.cacheManager.set(cacheKey, filmInfo);
+
+        return filmInfo;
+
+    }
 
 
     async getFilmCountry(country: string) {
@@ -151,7 +161,7 @@ export class FilmService {
             if(!filmSpId.includes(film.filmSpId)) {
                 filmSpId.push(film.filmSpId);
                 let filmData = await this.createFilm(film);
-                await this.createPersons(film, filmData.id);
+                // await this.createPersons(film, filmData.id);
             }
         }
     }
@@ -244,7 +254,7 @@ export class FilmService {
         return persons;
     }
 
-    async getFilmRating(rating: number): Promise<Film[]> {
+    async getFilmByRating(rating: number): Promise<Film[]> {
         return await this.filmRepository.findAll({where: {
             rating: {
                 [Op.gt]: rating
@@ -252,7 +262,7 @@ export class FilmService {
             }})
     }
 
-    async getFilmRatingVoteCount(amount: number): Promise<Film[]>  {
+    async getFilmByRatingVoteCount(amount: number): Promise<Film[]>  {
        return await this.filmRepository.findAll({where: {
                 ratingVoteCount: {
                     [Op.gt]: amount
@@ -298,11 +308,11 @@ export class FilmService {
     }
 
     private makeCountries(countries: Countries[]): string[] {
-        return countries.map(country => country.name);
+        return countries.map(country => country.nameRu);
     }
 
     private makeGenres(genre: Genres[]): string[]  {
-        return genre.map(genres => genres.name);
+        return genre.map(genres => genres.nameRu);
     }
 
     private async addGenres(genre: string, newFilm: Film) {
@@ -315,5 +325,12 @@ export class FilmService {
         const countriesObj = (countries) ? await this.countriesService.getCountries(countries.split(',')) : null;
         const countriesId = countriesObj?.map(el => el.id) || null;
         await newFilm.$set('countries', countriesId);
+    }
+
+    private async getFilmIdsByGenre(id: number[]) {
+      const genresFilm = await this.repositoryGenresFilm.findAll({where: {
+              genreId: {[Op.in] : id}
+            }})
+        return genresFilm.map(el => el.filmId);
     }
 }

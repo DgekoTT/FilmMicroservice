@@ -23,7 +23,7 @@ export class CountriesService {
         countries = countries.map((el) => el.trim());
         const results = await this.countriesRepository.findAll({
             where: {
-                name: { [Op.in]: countries },
+                nameRu: { [Op.in]: countries },
             },
         });
         return this.CountriesCache(results)
@@ -53,7 +53,10 @@ export class CountriesService {
     async loadCountries(): Promise<string> {
         try {
             let data = fs.readFileSync('./src/countries/countries.txt', 'utf8').split('\n');
-            let countries = data.map(el =>{ return {name: `${el.trim()}`}});
+            let countries = data.map(el =>{
+                let names = el.split('\t')
+                return {nameRu: `${names[0].trim()}`, nameEn: `${names[1].trim()}`}
+                });
             let res = await this.countriesRepository.bulkCreate(countries);
         } catch (err) {
             console.error(err);
@@ -67,7 +70,7 @@ export class CountriesService {
         // Кэширование результатов запроса на уровне отдельных стран
         const cachedResults: Countries[] = [];
         for (const country of results) {
-            const cachedResult = await this.cacheManager.wrap(`getCountry:${country.name}`, async () => country);
+            const cachedResult = await this.cacheManager.wrap(`getCountry:${country.nameRu}`, async () => country);
             cachedResults.push(cachedResult);
         }
         return cachedResults;
@@ -76,7 +79,7 @@ export class CountriesService {
     async getFromDbCountry(country: string): Promise<Countries | any> {
         return await this.countriesRepository.findOne({
             where: {
-                name: country,
+                nameRu: country,
             },
         });
     }

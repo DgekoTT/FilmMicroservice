@@ -2,12 +2,9 @@ import {BelongsToMany, Column, DataType, Model, Table} from "sequelize-typescrip
 import {Film} from "../film/film.model";
 import {CountriesFilm} from "../film/film-countries.model";
 import {ApiProperty} from "@nestjs/swagger";
+import {CountriesCreationAttrs} from "../interfaces/countries.interfaces";
 
 
-interface CountriesCreationAttrs {
-    id: number;
-    name: string;
-}
 
 @Table({tableName: 'countries'})//появится таблица с именем countries
 export class Countries extends Model<CountriesCreationAttrs> {
@@ -19,7 +16,11 @@ export class Countries extends Model<CountriesCreationAttrs> {
 
     @ApiProperty({example: 'Мексика', description: 'название страны'})
     @Column({type: DataType.STRING})
-    name: string;
+    nameRu: string;
+
+    @ApiProperty({example: 'Mexico', description: 'название страны'})
+    @Column({type: DataType.STRING})
+    nameEn: string;
 
     @ApiProperty({example: [1, 2], description: 'FK фильмов из таблицы CountriesFilm,', isArray: true})
     @BelongsToMany(()=> Film, ()=> CountriesFilm)

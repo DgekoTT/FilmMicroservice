@@ -1,4 +1,5 @@
  export class UpdateGenreDto {
     readonly id: number;
-    readonly name: string;
+     readonly nameRu: string;
+     readonly nameEn: string;
  }

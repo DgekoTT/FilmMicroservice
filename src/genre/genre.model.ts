@@ -2,13 +2,11 @@ import {BelongsToMany, Column, DataType, Model, Table} from "sequelize-typescrip
 import {Film} from "../film/film.model";
 import {GenresFilm} from "../film/film-genres.model";
 import {ApiProperty} from "@nestjs/swagger";
+import {GenresCreationAttrs} from "../interfaces/genre.interfaces";
 
 
 
-interface GenresCreationAttrs {
-    id: number;
-    name: string;
-}
+
 
 @Table({tableName: 'genres'})//появится таблица с именем genres
 export class Genres extends Model<GenresCreationAttrs> {
@@ -20,7 +18,11 @@ export class Genres extends Model<GenresCreationAttrs> {
 
     @ApiProperty({example: 'Комедия', description: 'название жанра'})
     @Column({type: DataType.STRING})
-    name: string;
+    nameRu: string;
+
+    @ApiProperty({example: 'Comedy', description: 'название жанра'})
+    @Column({type: DataType.STRING})
+    nameEn: string;
 
     @ApiProperty({example: [1, 2], description: 'FK из таблицы GenresFilm,', isArray: true})
     @BelongsToMany(()=> Film, ()=> GenresFilm)

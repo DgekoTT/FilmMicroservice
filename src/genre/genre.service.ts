@@ -48,29 +48,31 @@ export class GenreService {
         genre = genre.map(el => el.trim());
         return await this.genreRepository.findAll({
             where: {
-                name: { [Op.in]: genre }
+                nameRu: { [Op.in]: genre }
             }
         })
     }
 
-    // async getGenreId(genre: string): Promise<Genres> {
-    //     const cacheKey = `getCountryId:${country}`;
-    //     return await this.genreRepository.findOne({
-    //         where: {
-    //             name: genre
-    //         }
-    //     })
+    async getGenreId(genre: string[]): Promise<Genres[]> {
+        return await this.genreRepository.findAll({
+            where: {
+                nameRu: {[Op.in] : genre}
+            }
+        })
+    }
 
-    // }
     //загружаем жанры из файла в базу
    async loadGenres(): Promise<string> {
        try {
            let data = fs.readFileSync('./src/genre/genre.txt', 'utf8').split('\n');
-           let genres = data.map(el =>{ return {name: `${el.trim()}`}});
-           let res = await this.genreRepository.bulkCreate(genres);
-           console.log(res);
+           let genres = data.map(el =>{
+               let names = el.split(' ')
+               return {nameRu: `${names[0].trim()}`, nameEn: `${names[1].trim()}`}
+           });
+            let res = await this.genreRepository.bulkCreate(genres);
        } catch (err) {
            console.error(err);
+           throw new HttpException('Ошибка загрузки', HttpStatus.INTERNAL_SERVER_ERROR)
        }
        return `Жанры загружены в базу данных `
     }
