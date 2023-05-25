@@ -53,14 +53,15 @@ export class GenreService {
         })
     }
 
-    async getGenreId(genre: string): Promise<Genres> {
-        return await this.genreRepository.findOne({
-            where: {
-                name: {genre}
-            }
-        })
+    // async getGenreId(genre: string): Promise<Genres> {
+    //     const cacheKey = `getCountryId:${country}`;
+    //     return await this.genreRepository.findOne({
+    //         where: {
+    //             name: genre
+    //         }
+    //     })
 
-    }
+    // }
     //загружаем жанры из файла в базу
    async loadGenres(): Promise<string> {
        try {

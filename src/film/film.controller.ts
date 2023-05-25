@@ -119,15 +119,15 @@ export class FilmController {
         return this.filmService.getFilmRatingVoteCount(amount);
     }
 
-    @ApiOperation({summary: 'получаем фильмы по жанру'})
-    @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
-    @Get('/genre')
-    getFilmByGenre(@Body() dto: GenreFilmDto,): Promise<Film[]> {
-        /*мы получим фильмы без персонала, когда из списка мы выбираем
-        один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
-        */
-        return this.filmService.getFilmByGenre(dto.name);
-    }
+    // @ApiOperation({summary: 'получаем фильмы по жанру'})
+    // @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
+    // @Get('/genre')
+    // getFilmByGenre(@Body() dto: GenreFilmDto,): Promise<Film[]> {
+    //     /*мы получим фильмы без персонала, когда из списка мы выбираем
+    //     один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
+    //     */
+    //     return this.filmService.getFilmByGenre(dto.name);
+    // }
 
     @ApiOperation({summary: 'получаем фильмы по сртране'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})

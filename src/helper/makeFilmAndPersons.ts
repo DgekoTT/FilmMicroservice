@@ -13,6 +13,8 @@ export class Helper {
             year: film.year,
             filmDescription: film.filmDescription,
             filmSpId: film.filmSpId,
+            countries: film.countries,
+            genre: film.genre,
             director: persons?.director,
             scenario: persons?.scenario,
             producer: persons?.producer,

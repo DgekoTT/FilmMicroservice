@@ -9,7 +9,7 @@ import {UpdateFilmDto} from "./dto/update-film.dto";
 import * as fs from "fs";
 import {firstValueFrom} from "rxjs";
 import {ClientProxy} from "@nestjs/microservices";
-import {Op, where} from "sequelize";
+import {Op} from "sequelize";
 import {Actors, FilmInfo, Persons} from "../interfaces/film.interfacs";
 import {Countries} from "../countries/countries.model";
 import {Genres} from "../genre/genre.model";
@@ -79,16 +79,16 @@ export class FilmService {
     }
 
 
-    async getFilmByGenre(genre: string): Promise<Film[]> {
-        const genreObj = await this.genreService.getGenreId(genre);
-        console.log(genreObj)
-        return  await this.filmRepository.findAll({
-            where: {
-                // @ts-ignore
-                genre: `${genreObj.id}`
-            }, include: {all: true}
-        });
-    }
+    // async getFilmByGenre(genre: string[]): Promise<Film[]> {
+    //     const genreObj = await this.genreService.getGenreId(genre);
+    //     console.log(genreObj)
+    //     return  await this.filmRepository.findAll({
+    //         where: {
+    //             // @ts-ignore
+    //             genre: `${genreObj.id}`
+    //         }, include: {all: true}
+    //     });
+    // }
 
 
     async getFilmCountry(country: string) {
