@@ -10,25 +10,8 @@ import * as fs from "fs";
 import {firstValueFrom} from "rxjs";
 import {ClientProxy} from "@nestjs/microservices";
 import {Op} from "sequelize";
+import {Actors, FilmInfo, Persons} from "../interfaces/film.interfacs";
 
-type actors = {
-    id: number,
-    name: string
-};
-
-type FilmInfo = {
-    id: number,
-    name: string,
-    nameEn: string,
-    type: string,
-    image: string,
-    ratingVoteCount: number,
-    rating: number,
-    filmLength: string,
-    year: number,
-    filmDescription: string,
-    filmSpId: number,
-}
 
 
 
@@ -87,7 +70,7 @@ export class FilmService {
     }
 
 
-    async checkerFilm(film: Film ){
+    async checkerFilm(film: Film ): Promise<void>{
         if (!film) {
             throw new HttpException('Фильм с данным id не найден', HttpStatus.NOT_FOUND)
         }
@@ -142,7 +125,7 @@ export class FilmService {
     }
 
 
-    async makePersonDto(dto: any, id: number): Promise<{}> {
+    async makePersonDto(dto: any, id: number): Promise<Persons> {
        return  {
             filmId: id,
             director: dto.director,
@@ -197,29 +180,29 @@ export class FilmService {
     }
 
     //создаем персон фильма, если микросервис персон не ответит, получим пустой массив
-    async createPersons(dto: any, id: number): Promise<{}>  {
-        const personDto = await this.makePersonDto(dto, id);
+    async createPersons(dto: any, id: number): Promise<Persons>  {
+        const personDto: Persons = await this.makePersonDto(dto, id);
         const timeoutPromise = new Promise(resolve => setTimeout(resolve, 3000, []));
         const personsPromise = await firstValueFrom(this.client.send({cmd: 'createPersons'}, JSON.stringify(personDto)));
         let persons;
         try {
             persons = await Promise.race([personsPromise, timeoutPromise])
         } catch (err) {
-            console.error(`Error while getting persons for film ${id}: ${err.message}`);
+            console.error(`Ошибки при получении персон для филма ${id}: ${err.message}`);
             persons = [];
         }
         return persons;
     }
 
     //получаем персон фильма, если микросервис персон не ответит, получим пустой массив
-    async getPersons(id: number): Promise<{}> {
+    async getPersons(id: number): Promise<Persons> {
         const timeoutPromise = new Promise(resolve => setTimeout(resolve, 3000, []));
         const personsPromise = firstValueFrom(this.client.send({ cmd: 'getPersons' }, id));
         let persons;
         try {
             persons = await Promise.race([personsPromise, timeoutPromise]);
         } catch (err) {
-            console.error(`Error while getting persons for film ${id}: ${err.message}`);
+            console.error(`Ошибки при получении персон для филма ${id}: ${err.message}`);
             persons = [];
         }
         return persons;
@@ -267,7 +250,7 @@ export class FilmService {
     }
 
 
-    private makeActors(main_role: Record<number, string>): Promise<actors[]>{
+    private makeActors(main_role: Record<number, string>): Promise<Actors[]>{
         let actors = [];
         for (let[key, value] of Object.entries(main_role)) {
             actors.push({
