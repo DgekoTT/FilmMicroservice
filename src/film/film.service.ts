@@ -14,7 +14,8 @@ import {Actors, FilmInfo, Persons} from "../interfaces/film.interfacs";
 import {Countries} from "../countries/countries.model";
 import {Genres} from "../genre/genre.model";
 import {CountriesFilm} from "./film-countries.model";
-
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 
 
@@ -25,6 +26,7 @@ export class FilmService {
                 @InjectModel(CountriesFilm) private repositoryCountriesFilm: typeof CountriesFilm,
                 private genreService: GenreService,
                 private countriesService: CountriesService,
+                @Inject(CACHE_MANAGER) private cacheManager: Cache,
                 @Inject("FILM_SERVICE") private readonly client: ClientProxy) {}
 
 
@@ -33,7 +35,7 @@ export class FilmService {
         return await this.filmRepository.findAll({
             where: {
                 id: {[Op.in]: nums}
-            }
+            }, include: {all: true}
         });
     }
 
@@ -84,24 +86,62 @@ export class FilmService {
             where: {
                 // @ts-ignore
                 genre: `${genreObj.id}`
-            }
+            }, include: {all: true}
         });
     }
 
+    // async getFilmCountry(country: string) {
+    //     const countryObj = await this.countriesService.getCountryId(country);
+    //     if(!countryObj) {
+    //         return 'этой страны нет в базе '
+    //     }
+    //     let arrayId = await this.repositoryCountriesFilm.findAll({where: {
+    //             countryId: countryObj.id
+    //         }});
+    //     let id = arrayId.map(el => el.filmId)
+    //
+    //     return await this.filmRepository.findAll({
+    //         where: {
+    //            id:{[Op.in] : id}
+    //     }, include: {all: true}});
+    // }
     async getFilmCountry(country: string) {
         const countryObj = await this.countriesService.getCountryId(country);
-        if(!countryObj) {
-            return 'этой страны нет в базе '
+        if (!countryObj) {
+            throw new HttpException('этой страны нет в базе', HttpStatus.NOT_FOUND);
         }
-        let arrayId = await this.repositoryCountriesFilm.findAll({where: {
-                countryId: countryObj.id
-            }});
-        let id = arrayId.map(el => el.filmId)
 
+        const cacheKey = `getFilmCountry:${countryObj.id}`;
+        const cachedResult = await this.cacheManager.get(cacheKey);
+        if (cachedResult) {
+            return cachedResult;
+        }
+
+        const id = await this.getFilmIdsByCountry(countryObj.id);
+        const films = await this.getFilmsByIds(id);
+
+        await this.cacheManager.set(cacheKey, films);
+
+        return films;
+    }
+
+    async getFilmIdsByCountry(countryId: number): Promise<number[]> {
+        const arrayId = await this.repositoryCountriesFilm.findAll({
+            where: {
+                countryId
+            }
+        });
+
+        return arrayId.map(el => el.filmId);
+    }
+
+    async getFilmsByIds(ids: number[]): Promise<Film[]> {
         return await this.filmRepository.findAll({
             where: {
-               id:{[Op.in] : id}
-        }, include: {all: true}});
+                id: {[Op.in]: ids}
+            },
+            include: {all: true}
+        });
     }
 
     async loadFilms(): Promise<string> {
@@ -125,7 +165,7 @@ export class FilmService {
             if(!filmSpId.includes(film.filmSpId)) {
                 filmSpId.push(film.filmSpId);
                 let filmData = await this.createFilm(film);
-                // await this.createPersons(film, filmData.id);
+                await this.createPersons(film, filmData.id);
             }
         }
     }

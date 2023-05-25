@@ -13,6 +13,7 @@ import {CountriesFilm} from "./film-countries.model";
 import {ClientsModule, Transport} from "@nestjs/microservices";
 import {JwtModule} from "@nestjs/jwt";
 import {Helper} from "../helper/makeFilmAndPersons";
+import {CacheModule} from "@nestjs/cache-manager";
 
 
 
@@ -42,6 +43,7 @@ import {Helper} from "../helper/makeFilmAndPersons";
     GenreModule,
     CountriesModule,
     JwtModule,
+    CacheModule.register()
   ],
   exports: [
       FilmService
