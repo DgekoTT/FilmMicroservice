@@ -11,6 +11,24 @@ import {firstValueFrom} from "rxjs";
 import {ClientProxy} from "@nestjs/microservices";
 import {Op} from "sequelize";
 
+type actors = {
+    id: number,
+    name: string
+};
+
+type FilmInfo = {
+    id: number,
+    name: string,
+    nameEn: string,
+    type: string,
+    image: string,
+    ratingVoteCount: number,
+    rating: number,
+    filmLength: string,
+    year: number,
+    filmDescription: string,
+    filmSpId: number,
+}
 
 
 
@@ -98,7 +116,7 @@ export class FilmService {
     }
 
     async loadFilms(): Promise<string> {
-        for (let i=0; i < 21; i++) {// Проходим по всем файлам в папке
+        for (let i=0; i < 1; i++) {// Проходим по всем файлам в папке
             try{
                 let data = fs.readFileSync(`./src/film/filmData/filmsWithId${i}New.json`, 'utf8')
                 let info = JSON.parse(data);
@@ -137,7 +155,7 @@ export class FilmService {
         }
     }
 
-    makeFilmInfo(film: Film) {
+    makeFilmInfo(film: Film): FilmInfo {
         return {
             id: film.id,
             name: film.name,
@@ -154,6 +172,7 @@ export class FilmService {
     }
 
     private makeFilmToLoad(el: any) {
+        const actors = (el.main_role)? this.makeActors(el.main_role) : el.main_role;
         return  {
             name: el.title_ru,
             nameEn: el.title_en,
@@ -172,7 +191,7 @@ export class FilmService {
             composer: el.composer,
             painter: el.painter,
             installation: el.installation,
-            actors: el.main_role,
+            actors: actors,
         }
     }
 
@@ -246,5 +265,16 @@ export class FilmService {
         return film;
     }
 
+
+    private makeActors(main_role: Record<number, string>): Promise<actors[]>{
+        let actors = [];
+        for (let[key, value] of Object.entries(main_role)) {
+            actors.push({
+                id: key,
+                name: value
+            })
+        }
+        return Promise.resolve(actors);
+    }
 
 }
