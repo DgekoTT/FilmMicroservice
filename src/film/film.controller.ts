@@ -81,7 +81,7 @@ export class FilmController {
 
     @ApiOperation({summary: 'получения фильма по id'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
-    @Get('/:id')
+    @Get('/id/:id')
     async getFilmById(@Param('id') id: number): Promise<{}>{
         const persons = await this.filmService.getPersons(id);
         const film = await this.filmService.getFilmById(id);
@@ -121,7 +121,7 @@ export class FilmController {
 
     @ApiOperation({summary: 'получаем фильмы по жанру'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
-    @Get('genre')
+    @Get('/genre')
     getFilmByGenre(@Body() dto: GenreFilmDto,): Promise<Film[]> {
         /*мы получим фильмы без персонала, когда из списка мы выбираем
         один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
@@ -131,8 +131,8 @@ export class FilmController {
 
     @ApiOperation({summary: 'получаем фильмы по сртране'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
-    @Get('country')
-    async getFilmCountry(@Body() dto: CountryFilmDto): Promise<Film[]> {
+    @Get('/country')
+    async getFilmCountry(@Body() dto: CountryFilmDto){
         /*мы получим фильмы без персонала, когда из списка мы выбираем
         один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
          */
