@@ -9,10 +9,11 @@ import {UpdateFilmDto} from "./dto/update-film.dto";
 import * as fs from "fs";
 import {firstValueFrom} from "rxjs";
 import {ClientProxy} from "@nestjs/microservices";
-import {Op} from "sequelize";
+import {Op, where} from "sequelize";
 import {Actors, FilmInfo, Persons} from "../interfaces/film.interfacs";
 import {Countries} from "../countries/countries.model";
 import {Genres} from "../genre/genre.model";
+import {CountriesFilm} from "./film-countries.model";
 
 
 
@@ -21,6 +22,7 @@ import {Genres} from "../genre/genre.model";
 export class FilmService {
     //что бы иметь доступ к базе, инжектим модель бд
     constructor(@InjectModel(Film) private filmRepository: typeof Film,
+                @InjectModel(CountriesFilm) private repositoryCountriesFilm: typeof CountriesFilm,
                 private genreService: GenreService,
                 private countriesService: CountriesService,
                 @Inject("FILM_SERVICE") private readonly client: ClientProxy) {}
@@ -77,7 +79,8 @@ export class FilmService {
 
     async getFilmByGenre(genre: string): Promise<Film[]> {
         const genreObj = await this.genreService.getGenreId(genre);
-       return  await this.filmRepository.findAll({
+        console.log(genreObj)
+        return  await this.filmRepository.findAll({
             where: {
                 // @ts-ignore
                 genre: `${genreObj.id}`
@@ -87,13 +90,15 @@ export class FilmService {
 
     async getFilmCountry(country: string) {
         const countryObj = await this.countriesService.getCountryId(country);
+        let arrayId = await this.repositoryCountriesFilm.findAll({where: {
+                countryId: countryObj.id
+            }});
+        let id = arrayId.map(el => el.filmId)
+
         return await this.filmRepository.findAll({
             where: {
-                // @ts-ignore
-                countries: `${countryObj.id}`
-            }
-        });
-
+               id:{[Op.in] : id}
+        }, include: {all: true}});
     }
 
     async loadFilms(): Promise<string> {
@@ -117,7 +122,7 @@ export class FilmService {
             if(!filmSpId.includes(film.filmSpId)) {
                 filmSpId.push(film.filmSpId);
                 let filmData = await this.createFilm(film);
-                await this.createPersons(film, filmData.id);
+                // await this.createPersons(film, filmData.id);
             }
         }
     }

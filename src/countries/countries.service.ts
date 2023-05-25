@@ -21,24 +21,31 @@ export class CountriesService {
 
     async getCountries(countries: string[]): Promise<Countries[]> {
         countries = countries.map((el) => el.trim());
-        return await this.cacheManager.wrap('getCountries', async () => {
-            return await this.countriesRepository.findAll({
-                where: {
-                    name: { [Op.in]: countries },
-                },
-            });
+        const results = await this.countriesRepository.findAll({
+            where: {
+                name: { [Op.in]: countries },
+            },
         });
+        return this.CountriesCache(results)
     }
 
 
-    async getCountryId(country: string): Promise<Countries> {
-        return await this.cacheManager.wrap('getCountryId', async () => {
-            return await this.countriesRepository.findOne({
-                where: {
-                    name: country ,
-                },
-            });
-        });
+    async getCountryId(country: string): Promise<Countries | any> {
+
+        const cacheKey = `getCountryId:${country}`;
+
+        const cachedResult = await this.cacheManager.get(cacheKey);
+        if (cachedResult) {
+            return cachedResult;
+        }
+
+        const resultFromDB = await this.getFromDbCountry(country);
+
+        if (resultFromDB) {
+            await this.cacheManager.set(cacheKey, resultFromDB);
+        }
+
+        return resultFromDB;
     }
 
 
@@ -56,5 +63,21 @@ export class CountriesService {
     }
 
 
+    private async CountriesCache(results: Countries[]) {
+        // Кэширование результатов запроса на уровне отдельных стран
+        const cachedResults: Countries[] = [];
+        for (const country of results) {
+            const cachedResult = await this.cacheManager.wrap(`getCountry:${country.name}`, async () => country);
+            cachedResults.push(cachedResult);
+        }
+        return cachedResults;
+    }
 
+    async getFromDbCountry(country: string): Promise<Countries | any> {
+        return await this.countriesRepository.findOne({
+            where: {
+                name: country,
+            },
+        });
+    }
 }
