@@ -5,6 +5,7 @@ import {CountriesService} from "./countries.service";
 import {CountriesController} from "./countries.controller";
 import {CountriesFilm} from "../film/film-countries.model";
 import {JwtModule} from "@nestjs/jwt";
+import {CacheModule} from "@nestjs/cache-manager";
 
 
 
@@ -13,6 +14,7 @@ import {JwtModule} from "@nestjs/jwt";
   controllers: [CountriesController],
   imports: [SequelizeModule.forFeature([Countries, CountriesFilm]),
       JwtModule,
+      CacheModule.register()
   ],
   exports: [CountriesService]
 })

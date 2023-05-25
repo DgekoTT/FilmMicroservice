@@ -58,11 +58,11 @@ export class FilmController {
         return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
     }
 
-    @ApiCookieAuth()
-    @ApiOperation({summary: 'загрузка фильмов в бд из файлов через цикл'})
-    @ApiResponse({status: 200, description: 'Успешный запрос', type: String, isArray: false})
-    @Roles("admin")
-    @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
+    // @ApiCookieAuth()
+    // @ApiOperation({summary: 'загрузка фильмов в бд из файлов через цикл'})
+    // @ApiResponse({status: 200, description: 'Успешный запрос', type: String, isArray: false})
+    // @Roles("admin")
+    // @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
     @Post('/load')
     loadFilms(): Promise<string>{
         return this.filmService.loadFilms();
@@ -82,11 +82,12 @@ export class FilmController {
     @ApiOperation({summary: 'получения фильма по id'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
     @Get('/id/:id')
-    async getFilmById(@Param('id') id: number): Promise<{}>{
+    async getFilmById(@Param('id') id: number){
         const persons = await this.filmService.getPersons(id);
         const film = await this.filmService.getFilmById(id);
         const filmInfo = this.filmService.makeFilmInfo(film);
-        return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
+        return filmInfo
+        // return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
     }
 
     @ApiOperation({summary: 'получения фильма по filmSpId'})

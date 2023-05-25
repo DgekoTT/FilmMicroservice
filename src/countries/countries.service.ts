@@ -1,34 +1,46 @@
 
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
 import {Op} from "sequelize";
 import {Countries} from "./countries.model";
 import * as fs from "fs";
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 
+function InjectCache() {
 
+}
 
 @Injectable()
 export class CountriesService {
 
-    constructor(@InjectModel(Countries) private countriesRepository: typeof Countries) {}
+    constructor(@InjectModel(Countries) private countriesRepository: typeof Countries,
+                @Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
-    async getCountries(countries: string[]): Promise<Countries[]>{
-        countries = countries.map(el => el.trim());
-        return await this.countriesRepository.findAll({
-            where: {
-                name: { [Op.in]: countries }
-            }
-        })
+
+    async getCountries(countries: string[]): Promise<Countries[]> {
+        countries = countries.map((el) => el.trim());
+        return await this.cacheManager.wrap('getCountries', async () => {
+            return await this.countriesRepository.findAll({
+                where: {
+                    name: { [Op.in]: countries },
+                },
+            });
+        });
     }
+
 
     async getCountryId(country: string): Promise<Countries> {
-       return  await this.countriesRepository.findOne({
-            where: {
-                name: {country}
-            }
-        })
+        return await this.cacheManager.wrap('getCountryId', async () => {
+            return await this.countriesRepository.findOne({
+                where: {
+                    name: country ,
+                },
+            });
+        });
     }
+
 
     //загружаем страны из файла в базу
     async loadCountries(): Promise<string> {

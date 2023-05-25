@@ -24,5 +24,4 @@ export class CountriesController {
     loadCountries(): Promise<string> {
         return this.countriesService.loadCountries();
     }
-
 }

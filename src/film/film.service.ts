@@ -11,6 +11,8 @@ import {firstValueFrom} from "rxjs";
 import {ClientProxy} from "@nestjs/microservices";
 import {Op} from "sequelize";
 import {Actors, FilmInfo, Persons} from "../interfaces/film.interfacs";
+import {Countries} from "../countries/countries.model";
+import {Genres} from "../genre/genre.model";
 
 
 
@@ -44,12 +46,8 @@ export class FilmService {
 
     async createFilm(dto: CreateFilmDto): Promise<Film> {
         const newFilm = await this.filmRepository.create(dto);
-        const countriesObj = await this.countriesService.getCountries(dto.countries.split(','))
-        const countriesId = countriesObj.map(el => el.id);
-        await newFilm.$set('countries', countriesId);
-        const genreObj = await  this.genreService.getGenre(dto.genre.split(', '));
-        const genresId = genreObj.map(el=> el.id);
-        await newFilm.$set('genre', genresId);
+        await this.addCountries(dto.countries, newFilm)
+        await this.addGenres(dto.genre, newFilm)
         return newFilm;
     }
 
@@ -118,7 +116,7 @@ export class FilmService {
             let film = this.makeFilmToLoad(el)
             if(!filmSpId.includes(film.filmSpId)) {
                 filmSpId.push(film.filmSpId);
-                let filmData = await this.filmRepository.create(film);
+                let filmData = await this.createFilm(film);
                 await this.createPersons(film, filmData.id);
             }
         }
@@ -152,6 +150,8 @@ export class FilmService {
             year: film.year,
             filmDescription: film.filmDescription,
             filmSpId: film.filmSpId,
+            countries: this.makeCountries(film.countries),
+            genre: this.makeGenres(film.genre),
         }
     }
 
@@ -168,6 +168,8 @@ export class FilmService {
             year: +el.year,
             filmDescription: el.description,
             filmSpId: +el.filmId,
+            countries: el.country,
+            genre: el.genre,
             director: el.director,
             scenario: el.scenario,
             producer: el.producer,
@@ -261,4 +263,23 @@ export class FilmService {
         return actors;
     }
 
+    private makeCountries(countries: Countries[]): string[] {
+        return countries.map(country => country.name);
+    }
+
+    private makeGenres(genre: Genres[]): string[]  {
+        return genre.map(genres => genres.name);
+    }
+
+    private async addGenres(genre: string, newFilm: Film) {
+        const genreObj = (genre) ? await  this.genreService.getGenre(genre.split(', ')) : null;
+        const genresId = genreObj?.map(el => el.id) || null;
+        await newFilm.$set('genre', genresId);
+    }
+
+    private async addCountries(countries: string, newFilm: Film) {
+        const countriesObj = (countries) ? await this.countriesService.getCountries(countries.split(',')) : null;
+        const countriesId = countriesObj?.map(el => el.id) || null;
+        await newFilm.$set('countries', countriesId);
+    }
 }

@@ -1,10 +1,11 @@
-import {IsNumber, IsString} from "class-validator";
+import {IsNumber, IsOptional, IsString} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
 
 export class CreateFilmDto {
     @ApiProperty({example: '1', description: 'Уникальный идентификатор'})
     @IsNumber({}, {message: " Должно быть числом"})
-    id: number;
+    @IsOptional()
+    id?: number;
 
     @ApiProperty({example: 123452, description: 'уникальный id из базы кинопоиска, по нему связаны актеры и фильмы'})
     @IsNumber({}, {message: " Должно быть числом"})
@@ -34,10 +35,11 @@ export class CreateFilmDto {
     @IsNumber({}, {message: " Должно быть числом"})
     rating: number;
 
-    @ApiProperty({example: [1, 2], description: 'FK фильмов из таблицы CountriesFilm,', isArray: true})
+    @ApiProperty({example: "Мексика, Италия", description: 'FK фильмов из таблицы CountriesFilm,', isArray: true})
     @IsString({message: " Должно быть строкой"})
     countries: string;
-    @ApiProperty({example: [1, 2], description: 'FK фильмов из таблицы GenresFilm,', isArray: true})
+
+    @ApiProperty({example: 'Ужасы, Триллер', description: 'FK фильмов из таблицы GenresFilm,', isArray: true})
     @IsString({message: " Должно быть строкой"})
     genre: string;
 

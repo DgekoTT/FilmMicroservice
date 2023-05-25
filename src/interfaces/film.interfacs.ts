@@ -17,6 +17,8 @@ export interface FilmInfo {
     year: number,
     filmDescription: string,
     filmSpId: number,
+    countries: string[],
+    genre: string[],
 }
 
 export interface Persons  {
