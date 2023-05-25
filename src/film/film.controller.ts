@@ -86,8 +86,7 @@ export class FilmController {
         const persons = await this.filmService.getPersons(id);
         const film = await this.filmService.getFilmById(id);
         const filmInfo = this.filmService.makeFilmInfo(film);
-        return filmInfo
-        // return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
+        return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
     }
 
     @ApiOperation({summary: 'получения фильма по filmSpId'})
