@@ -58,11 +58,11 @@ export class FilmController {
         return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
     }
 
-    // @ApiCookieAuth()
-    // @ApiOperation({summary: 'загрузка фильмов в бд из файлов через цикл'})
-    // @ApiResponse({status: 200, description: 'Успешный запрос', type: String, isArray: false})
-    // @Roles("admin")
-    // @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
+    @ApiCookieAuth()
+    @ApiOperation({summary: 'загрузка фильмов в бд из файлов через цикл'})
+    @ApiResponse({status: 200, description: 'Успешный запрос', type: String, isArray: false})
+    @Roles("admin")
+    @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
     @Post('/load')
     loadFilms(): Promise<string>{
         return this.filmService.loadFilms();
