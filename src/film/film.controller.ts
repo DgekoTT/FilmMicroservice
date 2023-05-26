@@ -4,7 +4,7 @@ import {
     Controller,
     Get, Inject, Param,
     Post,
-    Put, UseGuards, UsePipes,
+    Put, Query, UseGuards, UsePipes,
 } from '@nestjs/common';
 import {FilmService} from "./film.service";
 import {CreateFilmDto} from "./dto/create-film.dto";
@@ -20,6 +20,7 @@ import {ApiCookieAuth, ApiOperation, ApiResponse} from "@nestjs/swagger";
 import {ValidationPipe} from "../pipes/validation.pipe";
 import { Helper} from "../helper/makeFilmAndPersons";
 import {FilmInfo} from "../interfaces/film.interfacs";
+import {FilterFilmDto} from "./dto/filter-film.dto";
 
 
 
@@ -80,6 +81,14 @@ export class FilmController {
         return this.filmService.updateFilm(dto);
     }
 
+    @ApiOperation({summary: 'получения фильмов, обрабатывает различные фильтры'})
+    @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
+    @Get('/filters')
+    async getFilmsByFilters(@Query() filters: FilterFilmDto){
+        const films = await this.filmService.getFilmsByFilters(filters);
+        return films
+        // return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
+    }
     @ApiOperation({summary: 'получения фильма по id'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
     @Get('/id/:id')

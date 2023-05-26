@@ -57,16 +57,22 @@ export class CreateFilmDto {
 
     @IsString({message: " Должно быть строкой"})
     director: string;
+
     @IsString({message: " Должно быть строкой"})
     scenario: string;
+
     @IsString({message: " Должно быть строкой"})
     producer: string;
+
     @IsString({message: " Должно быть строкой"})
     operator: string;
+
     @IsString({message: " Должно быть строкой"})
     composer: string;
+
     @IsString({message: " Должно быть строкой"})
     painter: string;
+
     @IsString({message: " Должно быть строкой"})
     installation: string;
 

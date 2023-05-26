@@ -17,6 +17,7 @@ import {CountriesFilm} from "./film-countries.model";
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import {GenresFilm} from "./film-genres.model";
+import {FilterFilmDto} from "./dto/filter-film.dto";
 
 
 
@@ -333,4 +334,60 @@ export class FilmService {
             }})
         return genresFilm.map(el => el.filmId);
     }
+
+    async getFilmsByFilters(filters: FilterFilmDto) {
+        const query: any = {};
+
+        if (filters.type) {
+            query.type = filters.type;
+        }
+
+        if (filters.genre) {
+            query.genre = {
+                [Op.in]: filters.genre,
+            };
+        }
+
+        if (filters.rating) {
+            query.rating = filters.rating;
+        }
+
+        if (filters.countries) {
+            query['$countries.name$'] = {
+                [Op.in]: filters.countries,
+            };
+        }
+
+        if (filters.ratingVoteCount) {
+            query.ratingVoteCount = filters.ratingVoteCount;
+        }
+
+        if (filters.filmLength) {
+            query.filmLength = filters.filmLength;
+        }
+
+        if (filters.year) {
+            query.year = filters.year;
+        }
+
+        if (filters.director) {
+            query.director = filters.director;
+        }
+
+        if (filters.actor) {
+            query['$actors.name$'] = filters.actor;
+        }
+
+        const films = await this.filmRepository.findAll({
+            where: query,
+            // include: [
+            //     { model: Countries, as: 'countries' },
+            //     { model: Actors, as: 'actors' },
+            // ],
+        });
+
+        return films;
+    }
 }
+
+
