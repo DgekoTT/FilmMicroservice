@@ -10,8 +10,6 @@ import {FilmService} from "./film.service";
 import {CreateFilmDto} from "./dto/create-film.dto";
 import {UpdateFilmDto} from "./dto/update-film.dto";
 import {Film} from "./film.model";
-import {GenreFilmDto} from "./dto/genre-film.dto";
-import {CountryFilmDto} from "./dto/get.country-film.dto";
 import {ClientProxy} from "@nestjs/microservices";
 import {firstValueFrom} from "rxjs";
 import {Roles} from "../Guards/roles-auth.decorator";
