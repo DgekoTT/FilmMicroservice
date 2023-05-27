@@ -109,51 +109,45 @@ export class FilmController {
         return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
     }
 
-    @ApiOperation({summary: 'получаем фильм по рейтингу'})
-    @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
-    @Get("/rating/:rating")
-    async getFilmByRating(@Param('rating') rating: number): Promise<Film[]> {
-        /*мы получим фильмы без персонала, когда из списка мы выбираем
-        один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
-        */
-        return this.filmService.getFilmByRating(rating);
-    }
+    // @ApiOperation({summary: 'получаем фильм по рейтингу'})
+    // @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
+    // @Get("/rating/:rating")
+    // async getFilmByRating(@Param('rating') rating: number): Promise<Film[]> {
+    //     /*мы получим фильмы без персонала, когда из списка мы выбираем
+    //     один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
+    //     */
+    //     return this.filmService.getFilmByRating(rating);
+    // }
 
-    @ApiOperation({summary: 'получаем фильм по количеству оценок'})
-    @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
-    @Get("/amount/:amount")
-    async getFilBymRatingVoteCount(@Param('amount') amount: number): Promise<Film[]> {
-        /*мы получим фильмы без персонала, когда из списка мы выбираем
-        один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
-        */
-        return this.filmService.getFilmByRatingVoteCount(amount);
-    }
+    // @ApiOperation({summary: 'получаем фильм по количеству оценок'})
+    // @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
+    // @Get("/amount/:amount")
+    // async getFilBymRatingVoteCount(@Param('amount') amount: number): Promise<Film[]> {
+    //     /*мы получим фильмы без персонала, когда из списка мы выбираем
+    //     один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
+    //     */
+    //     return this.filmService.getFilmByRatingVoteCount(amount);
+    // }
 
-    @ApiOperation({summary: 'получаем фильмы по жанру'})
-    @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
-    @Get('/genre')
-    getFilmByGenre(@Body() dto: GenreFilmDto,) {
-        /*мы получим фильмы без персонала, когда из списка мы выбираем
-        один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
-        */
-        return this.filmService.getFilmByGenre(dto.name);
-    }
+    // @ApiOperation({summary: 'получаем фильмы по жанру'})
+    // @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
+    // @Get('/genre')
+    // getFilmByGenre(@Body() dto: GenreFilmDto,) {
+    //     /*мы получим фильмы без персонала, когда из списка мы выбираем
+    //     один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
+    //     */
+    //     return this.filmService.getFilmByGenre(dto.name);
+    // }
 
-    @ApiOperation({summary: 'получаем фильмы по сртране'})
-    @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
-    @Get('/country')
-    async getFilmCountry(@Body() dto: CountryFilmDto){
-        /*мы получим фильмы без персонала, когда из списка мы выбираем
-        один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
-         */
-       return this.filmService. getFilmCountry(dto.name)
-    }
+    // @ApiOperation({summary: 'получаем фильмы по сртране'})
+    // @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
+    // @Get('/country')
+    // async getFilmCountry(@Body() dto: CountryFilmDto){
+    //     /*мы получим фильмы без персонала, когда из списка мы выбираем
+    //     один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
+    //      */
+    //    return this.filmService. getFilmCountry(dto.name)
+    // }
 
-    @ApiOperation({summary: 'получаем фильмы отсортированные', description: "мы можем передать от 1 до 4 параметров рейтинг, количество оценок, дата выхода, название и так же указать в каком порядке их сортировать"})
-    @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
-    @Get('/sorting')
-    getSortedFilms(@Body() sortBy: string[], sortOrder: string): Promise<Film[]>{
-        return this.filmService.getSortedFilms(sortBy, sortOrder);
-    }
 
 }
