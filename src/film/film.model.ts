@@ -4,6 +4,7 @@ import {CountriesFilm} from "./film-countries.model";
 import {Genres} from "../genre/genre.model";
 import {GenresFilm} from "./film-genres.model";
 import {ApiProperty} from "@nestjs/swagger";
+import {Actors} from "../interfaces/film.interfacs";
 
 
 interface FilmCreationAttrs {

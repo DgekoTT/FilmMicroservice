@@ -1,5 +1,7 @@
 import {IsNumber, IsOptional, IsString} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
+import {Column, DataType} from "sequelize-typescript";
+import {Actors} from "../../interfaces/film.interfacs";
 
 export class CreateFilmDto {
     @ApiProperty({example: '1', description: 'Уникальный идентификатор'})
@@ -54,6 +56,7 @@ export class CreateFilmDto {
     @ApiProperty({example: 'Это страна....', description: 'краткое описание фильма'})
     @IsString({message: " Должно быть строкой"})
     filmDescription: string;
+
 
     @IsString({message: " Должно быть строкой"})
     director: string;
