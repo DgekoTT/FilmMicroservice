@@ -162,7 +162,7 @@ export class FilmService {
             if(!filmSpId.includes(film.filmSpId)) {
                 filmSpId.push(film.filmSpId);
                 let filmData = await this.createFilm(film);
-                // await this.createPersons(film, filmData.id);
+                await this.createPersons(film, filmData.id);
             }
         }
     }
