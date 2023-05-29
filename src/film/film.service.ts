@@ -109,7 +109,7 @@ export class FilmService {
                 await this.loadToBase(info);
             }catch (e) {
                 console.log(e);
-                throw new HttpException("ошибка загрузки", HttpStatus.INTERNAL_SERVER_ERROR)
+                throw new HttpException(e.message(), HttpStatus.INTERNAL_SERVER_ERROR)
             }
         }
         return `successes`;
