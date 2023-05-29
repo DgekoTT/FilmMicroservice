@@ -80,47 +80,7 @@ export class FilmService {
     }
 
 
-    async getFilmByGenre(genre: string[]){
-        const genreObj = await this.genreService.getGenreId(genre);
-        const genreId = genreObj.map(el => el.id)
 
-        const cacheKey = `getFilmCountry:${genreObj.join()}`;
-        const cachedResult = await this.cacheManager.get(cacheKey);
-        if (cachedResult) {
-            return cachedResult;
-        }
-
-        const id = await this.getFilmIdsByGenre(genreId);
-        const films = await this.getFilmsByIds(id);
-        const filmInfo = films.map(film => this.makeFilmInfo(film))
-
-
-        await this.cacheManager.set(cacheKey, filmInfo);
-
-        return filmInfo;
-
-    }
-
-
-    async getFilmCountry(country: string) {
-        const countryObj = await this.countriesService.getCountryId(country);
-        if (!countryObj) {
-            throw new HttpException('этой страны нет в базе', HttpStatus.NOT_FOUND);
-        }
-
-        const cacheKey = `getFilmCountry:${countryObj.id}`;
-        const cachedResult = await this.cacheManager.get(cacheKey);
-        if (cachedResult) {
-            return cachedResult;
-        }
-
-        const id = await this.getFilmIdsByCountry(countryObj.id);
-        const films = await this.getFilmsByIds(id);
-
-        await this.cacheManager.set(cacheKey, films);
-
-        return films;
-    }
 
     async getFilmIdsByCountry(countryId: number): Promise<number[]> {
         const arrayId = await this.repositoryCountriesFilm.findAll({
@@ -160,6 +120,7 @@ export class FilmService {
         for (let el of info) {
             let film = this.makeFilmToLoad(el)
             if(!filmSpId.includes(film.filmSpId)) {
+                if (!film.filmSpId || isNaN(film.filmSpId)) {continue;}
                 filmSpId.push(film.filmSpId);
                 let filmData = await this.createFilm(film);
                 await this.createPersons(film, filmData.id);
