@@ -344,11 +344,13 @@ export class FilmService {
     async getFilmsByName(name: string) {
         name = decodeURIComponent(name);
         console.log(name)
-        return this.filmRepository.findAll({ where: {
+        const films = await this.filmRepository.findAll({ where: {
             name: {[Op.like]: `%${name}%`},
         }, 
-            limit: 10
+            limit: 10,
+            include: {all: true}
     })
+        return films.map(film => this.makeFilmInfo(film))
     }
 
 
