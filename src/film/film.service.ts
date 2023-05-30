@@ -294,7 +294,7 @@ export class FilmService {
 
         } else {
             // Если нет фильмов, соответствующих режиссеру и актеру пустой массив
-            return false;
+            return [];
         }
     }
 
