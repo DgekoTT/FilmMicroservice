@@ -102,14 +102,14 @@ export class FilmService {
     }
 
     async loadFilms(): Promise<string> {
-        for (let i=0; i < 28; i++) {// Проходим по всем файлам в папке
+        for (let i=0; i < 2 ; i++) {// Проходим по всем файлам в папке
             try{
                 let data = fs.readFileSync(`./src/film/filmData/filmsWithId${i}New.json`, 'utf8')
                 let info = JSON.parse(data);
                 await this.loadToBase(info);
             }catch (e) {
                 console.log(e);
-                throw new HttpException(e.message(), HttpStatus.INTERNAL_SERVER_ERROR)
+                throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR)
             }
         }
         return `successes`;
@@ -123,6 +123,7 @@ export class FilmService {
                 if (!film.filmSpId || isNaN(film.filmSpId)) {continue;}
                 filmSpId.push(film.filmSpId);
                 let filmData = await this.createFilm(film);
+                console.log(filmData.id)
                 await this.createPersons(film, filmData.id);
             }
         }
@@ -130,7 +131,8 @@ export class FilmService {
 
 
     async makePersonDto(dto: any, id: number): Promise<Persons> {
-       return  {
+        let actors = dto.actors ? dto.actors.map(el => el.name) : null
+        return  {
             filmId: id,
             director: dto.director,
             scenario: dto.scenario,
@@ -139,7 +141,7 @@ export class FilmService {
             composer: dto.composer,
             painter: dto.painter,
             installation: dto.installation,
-            actors: dto.actors
+            actors: actors
         }
     }
 
@@ -270,12 +272,12 @@ export class FilmService {
         if (!query || Object.keys(query).length === 0) {
             return { message: 'Фильмов по вашему запросу не найдено' };
         }
-        console.log(query)
 
-        const orderBy = filters.orderBy;
+
+        const orderBy = filters.orderBy || Object.keys(query)[0];
         const orderDirection = filters.orderDirection || 'ASC';
-
-       return  await this.filmRepository.findAll({
+        console.log(orderBy)
+        return  await this.filmRepository.findAll({
             where: query,
             order: [[orderBy, orderDirection]],
         });
