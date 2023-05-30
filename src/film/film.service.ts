@@ -339,7 +339,19 @@ export class FilmService {
             }
 
         return query;
+    }    
+    
+    async getFilmsByName(name: string) {
+        name = decodeURIComponent(name);
+        console.log(name)
+        return this.filmRepository.findAll({ where: {
+            name: {[Op.like]: `%${name}%`},
+        }, 
+            limit: 10
+    })
     }
+
+
 
 }
 

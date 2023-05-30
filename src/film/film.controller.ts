@@ -19,6 +19,8 @@ import {ValidationPipe} from "../pipes/validation.pipe";
 import { Helper} from "../helper/makeFilmAndPersons";
 import {FilmInfo} from "../interfaces/film.interfacs";
 import {FilterFilmDto} from "./dto/filter-film.dto";
+import {FilmNameDto} from "./dto/name-film.dto";
+
 
 
 
@@ -85,7 +87,7 @@ export class FilmController {
     async getFilmsByFilters(@Query() filters: FilterFilmDto){
         const films = await this.filmService.getFilmsByFilters(filters);
         return films
-        // return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
+
     }
     @ApiOperation({summary: 'получения фильма по id'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
@@ -97,6 +99,13 @@ export class FilmController {
         return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
     }
 
+    @ApiOperation({summary: 'получаем первый 10 фильмов по строке по строке'})
+    @ApiResponse({status: 200, description: 'Успешный запрос', type: String, isArray: false})
+    @Get('/name')
+    getFilmsByName(@Query() name : FilmNameDto) {
+        return this.filmService.getFilmsByName(name.name);
+    }
+
     @ApiOperation({summary: 'получения фильма по filmSpId'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
     @Get('/sp/:id')
@@ -106,46 +115,6 @@ export class FilmController {
         const filmInfo = this.filmService.makeFilmInfo(film);
         return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
     }
-
-    // @ApiOperation({summary: 'получаем фильм по рейтингу'})
-    // @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
-    // @Get("/rating/:rating")
-    // async getFilmByRating(@Param('rating') rating: number): Promise<Film[]> {
-    //     /*мы получим фильмы без персонала, когда из списка мы выбираем
-    //     один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
-    //     */
-    //     return this.filmService.getFilmByRating(rating);
-    // }
-
-    // @ApiOperation({summary: 'получаем фильм по количеству оценок'})
-    // @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
-    // @Get("/amount/:amount")
-    // async getFilBymRatingVoteCount(@Param('amount') amount: number): Promise<Film[]> {
-    //     /*мы получим фильмы без персонала, когда из списка мы выбираем
-    //     один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
-    //     */
-    //     return this.filmService.getFilmByRatingVoteCount(amount);
-    // }
-
-    // @ApiOperation({summary: 'получаем фильмы по жанру'})
-    // @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
-    // @Get('/genre')
-    // getFilmByGenre(@Body() dto: GenreFilmDto,) {
-    //     /*мы получим фильмы без персонала, когда из списка мы выбираем
-    //     один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
-    //     */
-    //     return this.filmService.getFilmByGenre(dto.name);
-    // }
-
-    // @ApiOperation({summary: 'получаем фильмы по сртране'})
-    // @ApiResponse({status: 200, description: 'Успешный запрос', type: Film, isArray: true})
-    // @Get('/country')
-    // async getFilmCountry(@Body() dto: CountryFilmDto){
-    //     /*мы получим фильмы без персонала, когда из списка мы выбираем
-    //     один фильм, то делаем отдельный запрос фильма по ид, тогда получим полную информацию
-    //      */
-    //    return this.filmService. getFilmCountry(dto.name)
-    // }
 
 
 }
