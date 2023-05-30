@@ -49,4 +49,12 @@ export class FilterFilmDto {
     @IsOptional()
     actor?: string;
 
+    @ApiProperty({example: "rating", description: "сортировка по какому полю "})
+    @IsOptional()
+    orderBy?: string
+
+    @ApiProperty({example: "ASC", description: "сортировка от большего к меньшему или наоборот "})
+    @IsOptional()
+    orderDirection?: string
+
 }

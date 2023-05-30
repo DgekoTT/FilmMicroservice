@@ -216,38 +216,7 @@ export class FilmService {
         return persons;
     }
 
-    async getFilmByRating(rating: number): Promise<Film[]> {
-        return await this.filmRepository.findAll({where: {
-            rating: {
-                [Op.gt]: rating
-            }
-            }})
-    }
 
-    async getFilmByRatingVoteCount(amount: number): Promise<Film[]>  {
-       return await this.filmRepository.findAll({where: {
-                ratingVoteCount: {
-                    [Op.gt]: amount
-                }
-            }})
-    }
-
-    async getSortedFilms(sortBy: string[], sortOrder: string): Promise<Film[]> {
-        let sortClause = [];
-        if (sortBy.includes('rating')) {
-            sortClause.push(['rating', sortOrder]);
-        }
-        if (sortBy.includes('ratingVoteCount')) {
-            sortClause.push(['ratingVoteCount', sortOrder]);
-        }
-        if (sortBy.includes('year')) {
-            sortClause.push(['year', sortOrder]);
-        }
-        if (sortBy.includes('name')) {
-            sortClause.push(['name', sortOrder]);
-        }
-       return await this.filmRepository.findAll({order: sortClause});
-    }
 
     async getFilmBySpId(SpId: number): Promise<Film> {
         const film =  await this.filmRepository.findOne({where: {
@@ -297,8 +266,40 @@ export class FilmService {
     }
 
     async getFilmsByFilters(filters: FilterFilmDto) {
-        const query: any = {};
+        const query: any = await this.makeQueryFilters(filters)
+        if (!query || Object.keys(query).length === 0) {
+            return { message: 'Фильмов по вашему запросу не найдено' };
+        }
+        console.log(query)
 
+        const orderBy = filters.orderBy;
+        const orderDirection = filters.orderDirection || 'ASC';
+
+       return  await this.filmRepository.findAll({
+            where: query,
+            order: [[orderBy, orderDirection]],
+        });
+
+    }
+
+    private async getSpIdByDirectorOrActor(director: string, actor: string) {
+        const directorName = director ? decodeURIComponent(director) : null;
+        const actorName = actor ? decodeURIComponent(actor) : null;
+
+        let filmIds = await firstValueFrom(this.client.send({cmd: 'Find film id by actor or director'},
+            JSON.stringify({director: directorName, actor: actorName})));
+
+        if (filmIds.length > 0) {
+            return  filmIds;
+
+        } else {
+            // Если нет фильмов, соответствующих режиссеру и актеру пустой массив
+            return false;
+        }
+    }
+
+    private async makeQueryFilters(filters: FilterFilmDto) {
+        let query: any = {};
         if (filters.type) {
             query.type = filters.type;
         }
@@ -331,24 +332,13 @@ export class FilmService {
             query.year = filters.year;
         }
 
-        if (filters.director) {
-            query.director = filters.director;
-        }
+        if (filters.director || filters.actor) {
+            query.id =  await this.getSpIdByDirectorOrActor(filters.director, filters.actor)
+            }
 
-        if (filters.actor) {
-            query['$actors.name$'] = filters.actor;
-        }
-
-        const films = await this.filmRepository.findAll({
-            where: query,
-            // include: [
-            //     { model: Countries, as: 'countries' },
-            //     { model: Actors, as: 'actors' },
-            // ],
-        });
-
-        return films;
+        return query;
     }
+
 }
 
 
