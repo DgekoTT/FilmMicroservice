@@ -102,7 +102,7 @@ export class FilmController {
     @ApiResponse({status: 200, description: 'Успешный запрос', type: String, isArray: false})
     @Get('/name')
     getFilmsByName(@Query() name : FilmNameDto) : Promise<FilmInfo[]> {
-        return this.filmService.getFilmsByName(name.name);
+        return this.filmService.getFilmsByName(name);
     }
 
     @ApiOperation({summary: 'получения фильма по filmSpId'})

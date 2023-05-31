@@ -18,6 +18,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
 import {GenresFilm} from "./film-genres.model";
 import {FilterFilmDto} from "./dto/filter-film.dto";
+import {FilmNameDto} from "./dto/name-film.dto";
 
 
 
@@ -333,12 +334,10 @@ export class FilmService {
         return id.filter((item) => newIds.includes(item));
     }
     
-    async getFilmsByName(name: string) : Promise<FilmInfo[]> {
-        name = decodeURIComponent(name);
-        console.log(name)
-        const films = await this.filmRepository.findAll({ where: {
-            name: {[Op.like]: `%${name}%`},
-        }, 
+    async getFilmsByName(name: FilmNameDto) : Promise<FilmInfo[]> {
+        const whereOption = name.nameEn ? {nameEn: {[Op.like]: `%${name.nameEn}%`}} : {name: {[Op.like]: `%${decodeURI(name.name)}%`}}
+        const films = await this.filmRepository.findAll({ where:
+            whereOption,
             limit: 10,
             include: {all: true}
     })
