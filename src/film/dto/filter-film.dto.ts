@@ -9,9 +9,9 @@ export class FilterFilmDto {
     @IsOptional()
     type?: string;
 
-    @ApiProperty({example: 'Ужасы, Триллер', description: 'FK фильмов из таблицы GenresFilm,', isArray: true})
+    @ApiProperty({example: 'comedy, drama', description: 'FK фильмов из таблицы GenresFilm,', isArray: true})
     @IsOptional()
-    genre?: string[];
+    genre?: string;
 
     @ApiProperty({example: 9.5, description: 'рейтинг фильма от 0 и до 10'})
     @IsNumber({}, {message: " Должно быть числом"})

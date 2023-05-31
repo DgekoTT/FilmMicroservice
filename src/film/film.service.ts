@@ -79,9 +79,6 @@ export class FilmService {
         }
     }
 
-
-
-
     async getFilmIdsByCountry(countryId: number): Promise<number[]> {
         const arrayId = await this.repositoryCountriesFilm.findAll({
             where: {
@@ -260,12 +257,7 @@ export class FilmService {
         await newFilm.$set('countries', countriesId);
     }
 
-    private async getFilmIdsByGenre(id: number[]) {
-      const genresFilm = await this.repositoryGenresFilm.findAll({where: {
-              genreId: {[Op.in] : id}
-            }})
-        return genresFilm.map(el => el.filmId);
-    }
+
 
     async getFilmsByFilters(filters: FilterFilmDto) {
         const query: any = await this.makeQueryFilters(filters)
@@ -273,10 +265,9 @@ export class FilmService {
             return { message: 'Фильмов по вашему запросу не найдено' };
         }
 
-
         const orderBy = filters.orderBy || Object.keys(query)[0];
         const orderDirection = filters.orderDirection || 'ASC';
-        console.log(orderBy)
+
         return  await this.filmRepository.findAll({
             where: query,
             order: [[orderBy, orderDirection]],
@@ -284,7 +275,7 @@ export class FilmService {
 
     }
 
-    private async getSpIdByDirectorOrActor(director: string, actor: string) {
+    private async getIdByDirectorOrActor(director: string, actor: string) {
         const directorName = director ? decodeURIComponent(director) : null;
         const actorName = actor ? decodeURIComponent(actor) : null;
 
@@ -301,15 +292,15 @@ export class FilmService {
     }
 
     private async makeQueryFilters(filters: FilterFilmDto) {
+        let id: any = []
         let query: any = {};
         if (filters.type) {
             query.type = filters.type;
         }
 
         if (filters.genre) {
-            query.genre = {
-                [Op.in]: filters.genre,
-            };
+            const filmIdByGenre =  await this.genreService.getFilmeIds(filters.genre)
+            id = this.filterIds(filmIdByGenre, id)
         }
 
         if (filters.rating) {
@@ -335,11 +326,19 @@ export class FilmService {
         }
 
         if (filters.director || filters.actor) {
-            query.id =  await this.getSpIdByDirectorOrActor(filters.director, filters.actor)
+            query.id =  await this.getIdByDirectorOrActor(filters.director, filters.actor)
             }
-
+        
+        if (id){
+            query.id = {[Op.in] : id} 
+        }
         return query;
     }    
+
+
+    filterIds(newIds: number[], id: number[]) {
+        if(!id){ return id.push(...newIds)}
+    }
     
     async getFilmsByName(name: string) {
         name = decodeURIComponent(name);
