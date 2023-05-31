@@ -57,7 +57,7 @@ export class GenreService {
     }
 
 
-    async getFilmeIds(genre: string): Promise<number[]> {
+    async getFilmIds(genre: string): Promise<number[]> {
       const genreIds: number[] = await this.getGenreId(genre);
     
       const filmsGenre: any[] = await this.repositoryGenresFilm.findAll({

@@ -1,11 +1,12 @@
 
 import {HttpException, HttpStatus, Inject, Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/sequelize";
-import {Op} from "sequelize";
+import sequelize, {Op} from "sequelize";
 import {Countries} from "./countries.model";
 import * as fs from "fs";
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import {CountriesFilm} from "../film/film-countries.model";
 
 
 function InjectCache() {
@@ -16,6 +17,7 @@ function InjectCache() {
 export class CountriesService {
 
     constructor(@InjectModel(Countries) private countriesRepository: typeof Countries,
+                @InjectModel(CountriesFilm) private repositoryCountriesFilm: typeof CountriesFilm,
                 @Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
 
@@ -30,23 +32,23 @@ export class CountriesService {
     }
 
 
-    async getCountryId(country: string): Promise<Countries | any> {
-
-        const cacheKey = `getCountryId:${country}`;
-
-        const cachedResult = await this.cacheManager.get(cacheKey);
-        if (cachedResult) {
-            return cachedResult;
-        }
-
-        const resultFromDB = await this.getFromDbCountry(country);
-
-        if (resultFromDB) {
-            await this.cacheManager.set(cacheKey, resultFromDB);
-        }
-
-        return resultFromDB;
-    }
+    // async getCountryId(country: string): Promise<Countries | any> {
+    //
+    //     const cacheKey = `getCountryId:${country}`;
+    //
+    //     const cachedResult = await this.cacheManager.get(cacheKey);
+    //     if (cachedResult) {
+    //         return cachedResult;
+    //     }
+    //
+    //     const resultFromDB = await this.getFromDbCountry(country);
+    //
+    //     if (resultFromDB) {
+    //         await this.cacheManager.set(cacheKey, resultFromDB);
+    //     }
+    //
+    //     return resultFromDB;
+    // }
 
 
     //загружаем страны из файла в базу
@@ -82,5 +84,34 @@ export class CountriesService {
                 nameRu: country,
             },
         });
+    }
+
+    async getFilmIds(countries: string) : Promise<number[]> {
+        const  countryIds: number[] = await this.getCountryId(countries);
+
+        const filmsGenre: any[] = await this.repositoryCountriesFilm.findAll({
+            attributes: ['filmId'],
+            where: {
+                countryId: {
+                    [Op.in]: countryIds
+                }
+            },
+            group: ['filmId'],
+            having: sequelize.literal(`COUNT(DISTINCT CASE WHEN "countryId" IN (${countryIds.join(',')}) THEN "countryId" END) = ${countryIds.length}`)
+        });
+
+        return filmsGenre.map((el) => el.filmId);
+    }
+
+
+    async getCountryId(countriesName: string): Promise<number[]> {
+        const countries =  await this.countriesRepository.findAll({
+            where: {
+                [Op.or]: countriesName.split(',').map((country) => ({
+                    nameEn: country
+                }))
+            }
+        })
+        return countries.map(el => el.id);
     }
 }

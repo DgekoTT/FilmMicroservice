@@ -84,11 +84,10 @@ export class FilmController {
     @ApiOperation({summary: 'получения фильмов, обрабатывает различные фильтры'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
     @Get('/filters')
-    async getFilmsByFilters(@Query() filters: FilterFilmDto){
-        const films = await this.filmService.getFilmsByFilters(filters);
-        return films
-
+    async getFilmsByFilters(@Query() filters: FilterFilmDto)  : Promise<FilmInfo[] | {message: string}>   {
+        return await this.filmService.getFilmsByFilters(filters);
     }
+
     @ApiOperation({summary: 'получения фильма по id'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
     @Get('/id/:id')
@@ -102,7 +101,7 @@ export class FilmController {
     @ApiOperation({summary: 'получаем первый 10 фильмов по строке по строке'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: String, isArray: false})
     @Get('/name')
-    getFilmsByName(@Query() name : FilmNameDto) {
+    getFilmsByName(@Query() name : FilmNameDto) : Promise<FilmInfo[]> {
         return this.filmService.getFilmsByName(name.name);
     }
 
