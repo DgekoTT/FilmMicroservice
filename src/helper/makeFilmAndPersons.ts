@@ -1,6 +1,7 @@
+import {FilmAndPersonsInfo} from "../interfaces/film.interfacs";
 
 export class Helper {
-     makeFilmAndPersonsInfo(film, persons) {
+     makeFilmAndPersonsInfo(film, persons) : FilmAndPersonsInfo {
         return {
             id: film.id,
             name: film.name,

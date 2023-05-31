@@ -16,19 +16,19 @@ export class GenreService {
     constructor(@InjectModel(Genres) private genreRepository: typeof Genres,
                 @InjectModel(GenresFilm) private repositoryGenresFilm: typeof GenresFilm) {
     }
-    async createGenre(dto: CreateGenreDto) {
+    async createGenre(dto: CreateGenreDto) : Promise<Genres> {
         return await this.genreRepository.create(dto);
     }
 м
-    async getGenreById(id: number) {
+    async getGenreById(id: number) : Promise<Genres> {
         return await this.genreRepository.findOne({where: {id : id}});
     }
 
-    async getAllGenres() {
+    async getAllGenres() : Promise<Genres[]> {
         return await this.genreRepository.findAll();
     }
 
-    async updateGenre(dto: UpdateGenreDto) {
+    async updateGenre(dto: UpdateGenreDto): Promise<string> {
         let genre = await this.genreRepository.findOne({where: {id: dto.id}});
         this.checkerGenre(genre);
         let success = await this.genreRepository.update({...dto}, {
@@ -41,7 +41,7 @@ export class GenreService {
     }
 
 
-    checkerGenre(genre:any) {
+    checkerGenre(genre:any) : void {
         if (!genre) {
             throw new HttpException('Жанр с данным id не найден', HttpStatus.NOT_FOUND);
         }
@@ -73,9 +73,6 @@ export class GenreService {
       
       return filmsGenre.map((el) => el.filmId);
     }
-    
-    
-        
 
     async getGenreId(genre: string): Promise<number[]> {
         const genres =  await this.genreRepository.findAll({

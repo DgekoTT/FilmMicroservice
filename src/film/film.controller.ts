@@ -17,7 +17,7 @@ import {RolesGuard} from "../Guards/role.guard";
 import {ApiCookieAuth, ApiOperation, ApiResponse} from "@nestjs/swagger";
 import {ValidationPipe} from "../pipes/validation.pipe";
 import { Helper} from "../helper/makeFilmAndPersons";
-import {FilmInfo} from "../interfaces/film.interfacs";
+import {FilmAndPersonsInfo, FilmInfo} from "../interfaces/film.interfacs";
 import {FilterFilmDto} from "./dto/filter-film.dto";
 import {FilmNameDto} from "./dto/name-film.dto";
 
@@ -52,7 +52,7 @@ export class FilmController {
     @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
     @UsePipes(ValidationPipe)
     @Post()
-    async createFilm(@Body() dto: CreateFilmDto): Promise<{}> {
+    async createFilm(@Body() dto: CreateFilmDto): Promise<FilmAndPersonsInfo> {
         let film = await this.filmService.createFilm(dto);
         const personDto = await this.filmService.makePersonDto(dto, film.id);
         const persons = await firstValueFrom(this.client.send({cmd: 'createPersons'}, JSON.stringify(personDto)))
@@ -91,7 +91,7 @@ export class FilmController {
     @ApiOperation({summary: 'получения фильма по id'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
     @Get('/id/:id')
-    async getFilmById(@Param('id') id: number){
+    async getFilmById(@Param('id') id: number): Promise<FilmAndPersonsInfo>{
         const persons = await this.filmService.getPersons(id);
         const film = await this.filmService.getFilmById(id);
         const filmInfo = this.filmService.makeFilmInfo(film);
@@ -108,7 +108,7 @@ export class FilmController {
     @ApiOperation({summary: 'получения фильма по filmSpId'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
     @Get('/sp/:id')
-    async getFilmBySpId(@Param('id') id: number): Promise<{}>{
+    async getFilmBySpId(@Param('id') id: number): Promise<FilmAndPersonsInfo>{
         const film = await this.filmService.getFilmBySpId(id);
         const persons = await this.filmService.getPersons(film.id);
         const filmInfo = this.filmService.makeFilmInfo(film);

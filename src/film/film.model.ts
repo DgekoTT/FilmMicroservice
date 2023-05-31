@@ -4,22 +4,9 @@ import {CountriesFilm} from "./film-countries.model";
 import {Genres} from "../genre/genre.model";
 import {GenresFilm} from "./film-genres.model";
 import {ApiProperty} from "@nestjs/swagger";
-import {Actors} from "../interfaces/film.interfacs";
+import {FilmCreationAttrs} from "../interfaces/film.interfacs";
 
 
-interface FilmCreationAttrs {
-    id: number;
-    name: string;
-    nameEn: string;
-    type: string;// фильм, сериал или мультфильм
-    image: string;// ссылка с кинопоиска на постер фильма
-    ratingVoteCount: number;
-    rating: number;
-    filmLength: string;// продолжительность
-    year: number;
-    filmDescription: string;
-    filmSpId: number;
-}
 
 @Table({tableName: 'Films'})//появится таблица с именем films
 export class Film extends Model<FilmCreationAttrs> {

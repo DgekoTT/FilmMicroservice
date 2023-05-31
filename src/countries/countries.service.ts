@@ -31,26 +31,6 @@ export class CountriesService {
         return this.CountriesCache(results)
     }
 
-
-    // async getCountryId(country: string): Promise<Countries | any> {
-    //
-    //     const cacheKey = `getCountryId:${country}`;
-    //
-    //     const cachedResult = await this.cacheManager.get(cacheKey);
-    //     if (cachedResult) {
-    //         return cachedResult;
-    //     }
-    //
-    //     const resultFromDB = await this.getFromDbCountry(country);
-    //
-    //     if (resultFromDB) {
-    //         await this.cacheManager.set(cacheKey, resultFromDB);
-    //     }
-    //
-    //     return resultFromDB;
-    // }
-
-
     //загружаем страны из файла в базу
     async loadCountries(): Promise<string> {
         try {
@@ -68,7 +48,7 @@ export class CountriesService {
     }
 
 
-    private async CountriesCache(results: Countries[]) {
+    private async CountriesCache(results: Countries[]) : Promise<Countries[]>  {
         // Кэширование результатов запроса на уровне отдельных стран
         const cachedResults: Countries[] = [];
         for (const country of results) {
@@ -78,13 +58,6 @@ export class CountriesService {
         return cachedResults;
     }
 
-    async getFromDbCountry(country: string): Promise<Countries | any> {
-        return await this.countriesRepository.findOne({
-            where: {
-                nameRu: country,
-            },
-        });
-    }
 
     async getFilmIds(countries: string) : Promise<number[]> {
         const  countryIds: number[] = await this.getCountryId(countries);

@@ -10,7 +10,7 @@ import * as fs from "fs";
 import {firstValueFrom} from "rxjs";
 import {ClientProxy} from "@nestjs/microservices";
 import {Op} from "sequelize";
-import {Actors, FilmInfo, Persons} from "../interfaces/film.interfacs";
+import {Actors, FilmInfo, FilterQuery, Persons} from "../interfaces/film.interfacs";
 import {Countries} from "../countries/countries.model";
 import {Genres} from "../genre/genre.model";
 import {CountriesFilm} from "./film-countries.model";
@@ -282,7 +282,7 @@ export class FilmService {
         }
     }
 
-    private async makeQueryFilters(filters: FilterFilmDto): Promise<any> {
+    private async makeQueryFilters(filters: FilterFilmDto): Promise<FilterQuery> {
         let id: any = []
         let query: any = {};
 
