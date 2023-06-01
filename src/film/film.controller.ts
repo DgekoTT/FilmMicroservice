@@ -20,6 +20,7 @@ import { Helper} from "../helper/makeFilmAndPersons";
 import {FilmAndPersonsInfo, FilmInfo} from "../interfaces/film.interfacs";
 import {FilterFilmDto} from "./dto/filter-film.dto";
 import {FilmNameDto} from "./dto/name-film.dto";
+import { CacheTTL } from '@nestjs/cache-manager';
 
 
 
@@ -84,6 +85,7 @@ export class FilmController {
     @ApiOperation({summary: 'получения фильмов, обрабатывает различные фильтры'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
     @Get('/filters')
+    @CacheTTL(60)
     async getFilmsByFilters(@Query() filters: FilterFilmDto)  : Promise<FilmInfo[] | {message: string}>   {
         return await this.filmService.getFilmsByFilters(filters);
     }
@@ -91,6 +93,7 @@ export class FilmController {
     @ApiOperation({summary: 'получения фильма по id'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
     @Get('/id/:id')
+    @CacheTTL(60)
     async getFilmById(@Param('id') id: number): Promise<FilmAndPersonsInfo>{
         const persons = await this.filmService.getPersons(id);
         const film = await this.filmService.getFilmById(id);
@@ -101,6 +104,7 @@ export class FilmController {
     @ApiOperation({summary: 'получаем первый 10 фильмов по строке по строке'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: String, isArray: false})
     @Get('/name')
+    @CacheTTL(60)
     getFilmsByName(@Query() name : FilmNameDto) : Promise<FilmInfo[]> {
         return this.filmService.getFilmsByName(name);
     }
@@ -108,6 +112,7 @@ export class FilmController {
     @ApiOperation({summary: 'получения фильма по filmSpId'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
     @Get('/sp/:id')
+    @CacheTTL(60)
     async getFilmBySpId(@Param('id') id: number): Promise<FilmAndPersonsInfo>{
         const film = await this.filmService.getFilmBySpId(id);
         const persons = await this.filmService.getPersons(film.id);

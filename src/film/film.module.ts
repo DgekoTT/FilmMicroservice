@@ -30,7 +30,7 @@ import {CacheModule} from "@nestjs/cache-manager";
           name: 'FILM_SERVICE',
           transport: Transport.RMQ,
           options: {
-            urls: [`amqp://localhost:5672`],//rabbitmq
+            urls: [`amqp://rabbitmq:5672`],//localhost
             queue: 'films_queue',
             queueOptions: {
               durable: false

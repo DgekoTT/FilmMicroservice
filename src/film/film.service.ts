@@ -203,6 +203,7 @@ export class FilmService {
             console.error(`Ошибки при получении персон для филма ${id}: ${err.message}`);
             persons = [];
         }
+        console.log(persons)
         return persons;
     }
 
@@ -251,19 +252,31 @@ export class FilmService {
 
 
     async getFilmsByFilters(filters: FilterFilmDto) : Promise<FilmInfo[] | {message: string}>         {
-        const query: any = await this.makeQueryFilters(filters)
-        if (!query || Object.keys(query).length === 0) {
-            return { message: 'Фильмов по вашему запросу не найдено' };
-        }
+        const query: any = await this.makeQueryFilters(filters);
 
+        if (!query || Object.keys(query).length === 0) {
+          return { message: 'Фильмов по вашему запросу не найдено' };
+        }
+      
+        const cacheKey = `getFilmsByFilters:${JSON.stringify(query)}:${filters.orderBy}:${filters.orderDirection}`;
+        const cachedFilmInfo = await this.cacheManager.get<FilmInfo[]>(cacheKey);
+      
+        if (cachedFilmInfo) return cachedFilmInfo;
+        
         const orderBy = filters.orderBy || Object.keys(query)[0];
         const orderDirection = filters.orderDirection || 'ASC';
-        const films =  await this.filmRepository.findAll({
-            where: query,
-            order: [[orderBy, orderDirection]],
-            include: {all: true}
+      
+        const films = await this.filmRepository.findAll({
+          where: query,
+          order: [[orderBy, orderDirection]],
+          include: { all: true },
         });
-        return films.map(film => this.makeFilmInfo(film));
+      
+        const filmInfo = films.map(film => this.makeFilmInfo(film));
+      
+        await this.cacheManager.set(cacheKey, filmInfo);
+      
+        return filmInfo;
     }
 
     private async getIdByDirectorOrActor(director: string, actor: string) : Promise<number[] | []> {
@@ -336,14 +349,24 @@ export class FilmService {
     
     async getFilmsByName(name: FilmNameDto) : Promise<FilmInfo[]> {
         const whereOption = name.nameEn ? {nameEn: {[Op.like]: `%${name.nameEn}%`}} : {name: {[Op.like]: `%${decodeURI(name.name)}%`}}
-        const films = await this.filmRepository.findAll({ where:
-            whereOption,
-            limit: 10,
-            include: {all: true}
-    })
-        return films.map(film => this.makeFilmInfo(film))
+   
+        const cacheKey = `getFilmsByName:${JSON.stringify(whereOption)}`;
+        const cachedFilmInfo = await this.cacheManager.get<FilmInfo[]>(cacheKey);
+      
+        if (cachedFilmInfo)  return cachedFilmInfo;
+        
+        const films = await this.filmRepository.findAll({
+          where: whereOption,
+          limit: 10,
+          include: { all: true },
+        });
+      
+        const filmInfo = films.map(film => this.makeFilmInfo(film));
+      
+        await this.cacheManager.set(cacheKey, filmInfo);
+      
+        return filmInfo;
     }
-
 }
 
 
