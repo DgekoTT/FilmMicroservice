@@ -68,8 +68,22 @@ export class FilmService {
     }
 
     async getFilmById(id: number): Promise<Film> {
-        const film =  await this.filmRepository.findOne({where: {id}, include: {all: true}});
-        await this.checkerFilm(film)
+        const cacheKey = `getFilmById:${id}`;
+        const cachedFilm = await this.cacheManager.get<Film>(cacheKey);
+      
+        if (cachedFilm) {
+          return cachedFilm;
+        }
+      
+        const film = await this.filmRepository.findOne({
+          where: { id },
+          include: { all: true },
+        });
+      
+        await this.checkerFilm(film);
+      
+        await this.cacheManager.set(cacheKey, film);
+      
         return film;
     }
 
@@ -210,10 +224,22 @@ export class FilmService {
 
 
     async getFilmBySpId(SpId: number): Promise<Film> {
-        const film =  await this.filmRepository.findOne({where: {
-                filmSpId: SpId
-            }, include: {all: true}});
-        await this.checkerFilm(film)
+        const cacheKey = `getFilmBySpId:${SpId}`;
+        const cachedFilm = await this.cacheManager.get<Film>(cacheKey);
+      
+        if (cachedFilm) {
+          return cachedFilm;
+        }
+      
+        const film = await this.filmRepository.findOne({
+          where: { filmSpId: SpId },
+          include: { all: true },
+        });
+      
+        await this.checkerFilm(film);
+      
+        await this.cacheManager.set(cacheKey, film);
+      
         return film;
     }
 

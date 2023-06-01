@@ -1,10 +1,11 @@
 
 import {
     Body,
+    CacheInterceptor,
     Controller,
     Get, Inject, Param,
     Post,
-    Put, Query, UseGuards, UsePipes,
+    Put, Query, UseGuards, UseInterceptors, UsePipes,
 } from '@nestjs/common';
 import {FilmService} from "./film.service";
 import {CreateFilmDto} from "./dto/create-film.dto";
@@ -21,6 +22,8 @@ import {FilmAndPersonsInfo, FilmInfo} from "../interfaces/film.interfacs";
 import {FilterFilmDto} from "./dto/filter-film.dto";
 import {FilmNameDto} from "./dto/name-film.dto";
 import { CacheTTL } from '@nestjs/cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 
 
@@ -32,6 +35,7 @@ export class FilmController {
 
     constructor(private filmService: FilmService,
                 @Inject("FILM_SERVICE") private readonly client: ClientProxy,
+                @Inject(CACHE_MANAGER) private cacheManager: Cache,
                 private helper: Helper) {
 
         this.helper = new Helper()
@@ -94,11 +98,9 @@ export class FilmController {
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
     @Get('/id/:id')
     @CacheTTL(60)
+    @UseInterceptors(CacheInterceptor)
     async getFilmById(@Param('id') id: number): Promise<FilmAndPersonsInfo>{
-        const persons = await this.filmService.getPersons(id);
-        const film = await this.filmService.getFilmById(id);
-        const filmInfo = this.filmService.makeFilmInfo(film);
-        return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
+        return await this.getFilmByAllId(id, 'id')
     }
 
     @ApiOperation({summary: 'получаем первый 10 фильмов по строке по строке'})
@@ -114,11 +116,24 @@ export class FilmController {
     @Get('/sp/:id')
     @CacheTTL(60)
     async getFilmBySpId(@Param('id') id: number): Promise<FilmAndPersonsInfo>{
-        const film = await this.filmService.getFilmBySpId(id);
-        const persons = await this.filmService.getPersons(film.id);
-        const filmInfo = this.filmService.makeFilmInfo(film);
-        return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
+        return await this.getFilmByAllId(id, 'sp')
     }
 
-
+    async getFilmByAllId(id: number, code: string) {
+        const cacheKey = `getFilmBy${code}:${id}`;
+        const cachedData = await this.cacheManager.get<FilmAndPersonsInfo>(cacheKey);
+      
+        if (cachedData) {
+          return cachedData;
+        }
+      
+        const persons = await this.filmService.getPersons(id);
+        const film = await this.filmService.getFilmById(id);
+        const filmInfo = this.filmService.makeFilmInfo(film);
+        const filmAndPersonsInfo = this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
+      
+        await this.cacheManager.set(cacheKey, filmAndPersonsInfo);
+      
+        return filmAndPersonsInfo;
+    }
 }
