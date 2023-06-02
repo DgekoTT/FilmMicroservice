@@ -42,7 +42,7 @@ export class GenreController {
 
     @ApiOperation({summary: 'получаем жанр по id'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Genres, isArray: false})
-    @Get("/:id")
+    @Get("/id/:id")
     getGenreById(@Param('id') id: number): Promise<Genres> {
         return this.genreService.getGenreById(id);
     }
