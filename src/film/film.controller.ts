@@ -126,9 +126,9 @@ export class FilmController {
         if (cachedData) {
           return cachedData;
         }
-      
-        const persons = await this.filmService.getPersons(id);
-        const film = await this.filmService.getFilmById(id);
+
+        const film = (code == 'id') ? await this.filmService.getFilmById(id) : await this.filmService.getFilmBySpId(id)
+        const persons = await this.filmService.getPersons(film.id);
         const filmInfo = this.filmService.makeFilmInfo(film);
         const filmAndPersonsInfo = this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
       
