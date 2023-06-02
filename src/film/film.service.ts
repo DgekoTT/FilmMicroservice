@@ -357,7 +357,7 @@ export class FilmService {
     }
     
     async getFilmsByName(name: FilmNameDto) : Promise<FilmInfo[]> {
-        const whereOption = name.nameEn ? {nameEn: {[Op.like]: `%${name.nameEn}%`}} : {name: {[Op.like]: `%${decodeURI(name.name)}%`}}
+        const whereOption = name.nameEn ? {nameEn: {[Op.iLike]: `%${name.nameEn}%`}} : {name: {[Op.iLike]: `%${decodeURI(name.name)}%`}}
    
         const cacheKey = `getFilmsByName:${JSON.stringify(whereOption)}`;
         const cachedFilmInfo = await this.cacheManager.get<FilmInfo[]>(cacheKey);
