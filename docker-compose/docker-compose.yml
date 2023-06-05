@@ -103,15 +103,4 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=SuperSecretPassword
 
 
-  nginx:
-    build:
-      context: .
-    container_name: apigateway
-    hostname: apigateway
-    ports:
-      - "80:80"
-    depends_on:
-      - app-film
-      - app-person
-      - app-auth
-      - comments
+
