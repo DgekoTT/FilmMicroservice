@@ -27,10 +27,20 @@
 также клонировать 3 микросевиса:
 https://github.com/DgekoTT/CommentsMicroservice.git
 https://github.com/DgekoTT/PersonsMicroService.git
-https://github.com/DgekoTT/AuthMicroservice.git 
-\n
-После этого запустить docker compose
-\n
+https://github.com/DgekoTT/AuthMicroservice.git  
+После этого запустить docker compose  
+создаем админа:
+@Post http://localhost:5010/auth/admin ({
+    "email": "shrek@gmail.comgdgeg",
+    "password": "fsgsgsgsgs",
+    "displayName": "OOOOOOO"
+})  
+Перед началом работы оправляем запрос 
+@Post http://localhost:5000/countries/load загружаются все страны в бд
+
+@Post http://localhost:5000/genres/load загружаются все жанры в бд
+
+@Post http://localhost:5000/films/load загружаются все фильмы в бд  
 
 ## Swager
 http://localhost:5000/api/docs
@@ -70,12 +80,6 @@ npm run listenFilm
 
 API
 
-Перед началом работы оправляем запрос 
-@Post http://localhost:5000/countries/load загружаются все страны в бд
-
-@Post http://localhost:5000/genres/load загружаются все жанры в бд
-
-@Post http://localhost:5000/films/load загружаются все фильмы в бд
 
 Создание фильма
 @Post http://localhost:5000/films через @Body передаем параметры
