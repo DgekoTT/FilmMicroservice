@@ -31,7 +31,7 @@ https://github.com/DgekoTT/AuthMicroservice.git
 После этого запустить docker compose  
 создаем админа:
 @Post http://localhost:5010/auth/admin ({
-    "email": "shrek@gmail.comgdgeg",
+    "email": "shrek@gmail.com",
     "password": "fsgsgsgsgs",
     "displayName": "OOOOOOO"
 })  
