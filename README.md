@@ -23,13 +23,14 @@
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Description
-Микросервис фильмов. в папке эээ  небходимо скопировать и поместить файлы в одной дериктории куда клонировали проекты.
+Микросервис фильмов. в папке docker-compose  небходимо скопировать и поместить файлы в одной дериктории куда клонировали проекты.
 также клонировать 3 микросевиса:
 https://github.com/DgekoTT/CommentsMicroservice.git
 https://github.com/DgekoTT/PersonsMicroService.git
 https://github.com/DgekoTT/AuthMicroservice.git 
 \n
 После этого запустить docker compose
+\n
 
 ## Swager
 http://localhost:5000/api/docs
