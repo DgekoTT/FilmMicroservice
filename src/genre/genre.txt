@@ -14,7 +14,7 @@
 фэнтези fantasy
 документальный documentary
 спорт sport
-для взрослых for adults
+для_взрослых for_adults
 детский childlike
 мюзикл musical
 биография biography
