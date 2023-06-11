@@ -88,11 +88,13 @@ export class GenreService {
     //загружаем жанры из файла в базу
    async loadGenres(): Promise<string> {
        try {
-           let data = fs.readFileSync('./src/genre/genre.txt', 'utf8').split('\n');
-           let genres = data.map(el =>{
-               let names = el.split(' ')
-               return {nameRu: `${names[0].trim()}`, nameEn: `${names[1].trim()}`}
-           });
+            let data = fs.readFileSync('./src/genre/genre.txt', 'utf8').split('\n');
+            let genres = data.map(el =>{
+                if (!el.trim()) return;
+                let names = el.split(' ');
+                return {nameRu: `${names[0].trim()}`, nameEn: `${names[1].trim()}`}
+            });
+            genres = genres.filter(Boolean);
             let res = await this.genreRepository.bulkCreate(genres);
        } catch (err) {
            console.error(err);
