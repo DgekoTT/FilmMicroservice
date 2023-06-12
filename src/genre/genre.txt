@@ -14,7 +14,7 @@
 фэнтези fantasy
 документальный documentary
 спорт sport
-
+мультфильм cartoon
 для_взрослых for_adults
 детский childlike
 мюзикл musical
