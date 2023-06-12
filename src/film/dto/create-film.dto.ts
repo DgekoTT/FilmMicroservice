@@ -4,10 +4,6 @@ import {Column, DataType} from "sequelize-typescript";
 import {Actors} from "../../interfaces/film.interfacs";
 
 export class CreateFilmDto {
-    @ApiProperty({example: '1', description: 'Уникальный идентификатор'})
-    @IsNumber({}, {message: " Должно быть числом"})
-    @IsOptional()
-    id?: number;
 
     @ApiProperty({example: 123452, description: 'уникальный id из базы кинопоиска, по нему связаны актеры и фильмы'})
     @IsNumber({}, {message: " Должно быть числом"})
@@ -37,11 +33,11 @@ export class CreateFilmDto {
     @IsNumber({}, {message: " Должно быть числом"})
     rating: number;
 
-    @ApiProperty({example: "Мексика, Италия", description: 'FK фильмов из таблицы CountriesFilm,', isArray: true})
+    @ApiProperty({example: "Мексика, Италия", description: 'страны', isArray: false})
     @IsString({message: " Должно быть строкой"})
     countries: string;
 
-    @ApiProperty({example: 'Ужасы, Триллер', description: 'FK фильмов из таблицы GenresFilm,', isArray: true})
+    @ApiProperty({example: 'ужасы, триллер', description: 'жанры', isArray: false})
     @IsString({message: " Должно быть строкой"})
     genre: string;
 
@@ -57,25 +53,31 @@ export class CreateFilmDto {
     @IsString({message: " Должно быть строкой"})
     filmDescription: string;
 
-
+    @ApiProperty({example: 'Сергей Стрижак', description: 'Режиссер'})
     @IsString({message: " Должно быть строкой"})
     director: string;
 
+    @ApiProperty({example: 'Айдар Акманов, Мустай Карим', description: 'сценарист'})
     @IsString({message: " Должно быть строкой"})
     scenario: string;
 
+    @ApiProperty({example: 'Тимербулат Каримов, Михаил Курбатов, Дмитрий Фикс', description: 'продюссер'})
     @IsString({message: " Должно быть строкой"})
     producer: string;
 
+    @ApiProperty({example: 'Михаил Агранович', description: 'оператор'})
     @IsString({message: " Должно быть строкой"})
     operator: string;
 
+    @ApiProperty({example: 'Илья Духовный', description: 'композитор'})
     @IsString({message: " Должно быть строкой"})
     composer: string;
 
+    @ApiProperty({example: 'Вячеслав Виданов, Янина Боуден', description: 'художник'})
     @IsString({message: " Должно быть строкой"})
     painter: string;
 
+    @ApiProperty({example: 'Игорь Медведев', description: 'инсталяция'})
     @IsString({message: " Должно быть строкой"})
     installation: string;
 

@@ -57,12 +57,11 @@ export class FilmController {
     @UseGuards(RolesGuard) // проверка на роли, получить доступ сможет только админ
     @UsePipes(ValidationPipe)
     @Post()
-    async createFilm(@Body() dto: CreateFilmDto): Promise<FilmAndPersonsInfo> {
+    async createFilm(@Body() dto: CreateFilmDto): Promise<string> {
         let film = await this.filmService.createFilm(dto);
         const personDto = await this.filmService.makePersonDto(dto, film.id);
         const persons = await firstValueFrom(this.client.send({cmd: 'createPersons'}, JSON.stringify(personDto)))
-        const filmInfo = this.filmService.makeFilmInfo(film);
-        return this.helper.makeFilmAndPersonsInfo(filmInfo, persons);
+        return `Фильм успешно создан id ${film.id}`;
     }
 
     @ApiCookieAuth()
