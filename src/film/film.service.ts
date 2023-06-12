@@ -343,10 +343,9 @@ export class FilmService {
             id = this.filterIds(filmIdByPersons, id)
             }
         
-        if (id){
+        if (id?.length){
             query.id = {[Op.in] : id} 
         }
-
         return query;
     }    
 
