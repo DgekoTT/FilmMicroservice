@@ -8,7 +8,6 @@ import {CountriesService} from "./countries.service";
 import {Roles} from "../Guards/roles-auth.decorator";
 import {RolesGuard} from "../Guards/role.guard";
 import {ApiCookieAuth, ApiOperation, ApiResponse} from "@nestjs/swagger";
-import {Genres} from "../genre/genre.model";
 import {Countries} from "./countries.model";
 
 @Controller('countries')
