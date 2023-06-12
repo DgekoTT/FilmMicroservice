@@ -28,7 +28,7 @@ export class CountriesController {
     }
 
     @ApiOperation({summary: 'получаем все страны'})
-    @ApiResponse({status: 200, description: 'Успешный запрос', type: Genres, isArray: true})
+    @ApiResponse({status: 200, description: 'Успешный запрос', type: Countries, isArray: true})
     @Get()
     getAllCountries(): Promise<Countries[]> {
         return this.countriesService.getAllCountries();
