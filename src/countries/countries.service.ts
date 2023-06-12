@@ -87,4 +87,8 @@ export class CountriesService {
         })
         return countries.map(el => el.id);
     }
+
+   async getAllCountries() {
+        return await this.countriesRepository.findAll();
+    }
 }
