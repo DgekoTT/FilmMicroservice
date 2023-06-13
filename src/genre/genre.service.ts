@@ -4,7 +4,7 @@ import {InjectModel} from "@nestjs/sequelize";
 import {Genres} from "./genre.model";
 import {CreateGenreDto} from "./dto/create.genre.dto";
 import {UpdateGenreDto} from "./dto/update.genre.dto";
-import {Op, QueryTypes} from "sequelize";
+import {Op} from "sequelize";
 import * as fs from "fs";
 import { GenresFilm } from 'src/film/film-genres.model';
 import sequelize from 'sequelize';
@@ -19,7 +19,7 @@ export class GenreService {
     async createGenre(dto: CreateGenreDto) : Promise<Genres> {
         return await this.genreRepository.create(dto);
     }
-м
+
     async getGenreById(id: number) : Promise<Genres> {
         return await this.genreRepository.findOne({where: {id : id}});
     }
@@ -58,19 +58,18 @@ export class GenreService {
 
 
     async getFilmIds(genre: string): Promise<number[]> {
-      const genreIds: number[] = await this.getGenreId(genre);
-    
-      const filmsGenre: any[] = await this.repositoryGenresFilm.findAll({
-        attributes: ['filmId'],
-        where: {
-          genreId: {
-            [Op.in]: genreIds
-          }
-        },
+        const genreIds: number[] = await this.getGenreId(genre);
+        const filmsGenre: any[] = await this.repositoryGenresFilm.findAll({
+            attributes: ['filmId'],
+            where: {
+            genreId: {
+                [Op.in]: genreIds
+                }
+            },
         group: ['filmId'],
         having: sequelize.literal(`COUNT(DISTINCT CASE WHEN "genreId" IN (${genreIds.join(',')}) THEN "genreId" END) = ${genreIds.length}`)
       });
-      
+
       return filmsGenre.map((el) => el.filmId);
     }
 
@@ -91,7 +90,7 @@ export class GenreService {
             let data = fs.readFileSync('./src/genre/genre.txt', 'utf8').split('\n');
             let genres = data.map(el =>{
                 if (!el.trim()) return;
-                let names = el.split(' ');
+                let names = el.split(',');
                 return {nameRu: `${names[0].trim()}`, nameEn: `${names[1].trim()}`}
             });
             genres = genres.filter(Boolean);

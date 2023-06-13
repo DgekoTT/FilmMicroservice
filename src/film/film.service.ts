@@ -313,7 +313,7 @@ export class FilmService {
         }
 
         if (filters.genre) {
-            const filmIdByGenre =  await this.genreService.getFilmIds(filters.genre)
+            const filmIdByGenre =  await this.genreService.getFilmIds(filters.genre);
             id = this.filterIds(filmIdByGenre, id)
         }
 
@@ -346,7 +346,6 @@ export class FilmService {
         if (id && (filters.genre || filters.countries || filters.director || filters.actor)){
             query.id = {[Op.in] : id} 
         }
-        console.log(query)
         return query;
     }    
 

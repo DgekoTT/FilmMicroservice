@@ -1,25 +1,25 @@
-боевик action_movie
-вестерн western
-военный military
-детектив detective
-история historical
-драма drama
-комедия comedy
-криминал crime
-мелодрама melodrama
-приключения adventures
-триллер thriller
-ужасы horrors
-фантастика fantastic
-фэнтези fantasy
-документальный documentary
-спорт sport
-мультфильм cartoon
-для_взрослых for_adults
-детский childlike
-мюзикл musical
-биография biography
-музыка music
+боевик,action_movie
+вестерн,western
+военный,military
+детектив,detective
+история,historical
+драма,drama
+комедия,comedy
+криминал,crime
+мелодрама,melodrama
+приключения,adventures
+триллер,thriller
+ужасы,horrors
+фантастика,fantastic
+фэнтези,fantasy
+документальный,documentary
+спорт,sport
+мультфильм,cartoon
+для взрослых,for adults
+детский,childlike
+мюзикл,musical
+биография,biography
+музыка,music
 
-концерт concert
-семейный family
+концерт,concert
+семейный,family
