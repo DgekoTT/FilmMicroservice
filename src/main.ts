@@ -9,7 +9,7 @@ async function server() {
   const PORT = process.env.PORT || 4050;
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: "*",
+    origin: "http://localhost:3000",
     credentials: true,// отвечает за куки
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     preflightContinue: false,
