@@ -343,9 +343,10 @@ export class FilmService {
             id = this.filterIds(filmIdByPersons, id)
             }
         
-        if (id?.length){
+        if (id && (filters.genre || filters.countries || filters.director || filters.actor)){
             query.id = {[Op.in] : id} 
         }
+        console.log(query)
         return query;
     }    
 

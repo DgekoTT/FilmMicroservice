@@ -2,7 +2,7 @@
 вестерн western
 военный military
 детектив detective
-исторический historical
+история historical
 драма drama
 комедия comedy
 криминал crime
