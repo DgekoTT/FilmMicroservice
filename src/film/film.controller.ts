@@ -88,7 +88,6 @@ export class FilmController {
     @ApiOperation({summary: 'получения фильмов, обрабатывает различные фильтры'})
     @ApiResponse({status: 200, description: 'Успешный запрос', type: Object, isArray: true})
     @Get('/filters')
-    @CacheTTL(60)
     async getFilmsByFilters(@Query() filters: FilterFilmDto)  : Promise<FilmInfo[] | {message: string}>   {
         return await this.filmService.getFilmsByFilters(filters);
     }
